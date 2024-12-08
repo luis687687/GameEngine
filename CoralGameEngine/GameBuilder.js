@@ -89,8 +89,9 @@ class GameBuilder {
    * Reconhece a classe filho e recolhe todos os GameObject em uma lista de GameObjects
    *  init function
    */
-  recognizeChildren(gameObject){
-    this.allObjects.push(gameObject)
+  recognizeChildren(gameObject){ //utilizado sempre que se cria um gameObject novo
+    if(!this.allObjects.includes(gameObject)) //melhorar caso necessario
+      this.allObjects.push(gameObject)
   }
 
 
@@ -128,6 +129,11 @@ class GameBuilder {
    */
   removeObject(gameObject){
     this.allObjects = this.allObjects.filter( e => e != (gameObject))
+  }
+  
+  /**Retorna o conjunto de filhos que pertence a um certo tipo */
+  getChilds(ObjType){
+    return this.allObjects.filter( e => e instanceof ObjType)
   }
   
 }

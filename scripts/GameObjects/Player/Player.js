@@ -11,30 +11,20 @@ export default class Player extends GameObject {
     super(game, 170, 126, 0, game.height - 126 + objectYPosition)
     this.limitedHorizontal = true
     this.limitedVertical = true
-    
-    this.path = "../../../sprites/player/"
-    this.animations = [
-      new Idle(this, this.path+"spr_Idle_strip.png"),
-      new JumAtack(this, this.path+"spr_Leap_strip.png"),
-      new Walk(this, this.path+"spr_Walk_strip.png"),
-      new Atack1(this, this.path+"spr_Attack_strip.png"),
-      new Dash(this, `../../../sprites/player/spr_Dash_strip.png`),
-      new Dead(this, `../../../sprites/player/spr_Death_strip.png`),
-      new Jump(this, `../../../sprites/player/spr_Jump_strip.png`),
-      new SpeenAtack(this, `../../../sprites/player/spr_SpinAttack_strip.png`),
-      new Warrior(this, `../../../sprites/Player/spr_Taunt_strip.png`),
-    ]
+    this.setAnimations()
     this.enterToAnimation(Walk)
-    
     this.coliderInitializer(30,this.height - 50 , 30, 50)
     this.isOnCenter = false
     this.debug = true
-    
+    this.runned = false
   }
+
   update(){
-    //console.log( this.getColider().getRealCenterX(),  this.getColider().x, " Player ", this.getColider().width)
+    this.runned = true
     this.moveHorizontal()
+    this.moveVertical()
   }
+
 
 
   moveHorizontal(){
@@ -81,6 +71,21 @@ onColision(obj){
     }
   }
   
+}
+
+setAnimations(){
+  this.path = "../../../sprites/player/"
+  this.animations = [
+    new Idle(this, this.path+"spr_Idle_strip.png"),
+    new JumAtack(this, this.path+"spr_Leap_strip.png"),
+    new Walk(this, this.path+"spr_Walk_strip.png"),
+    new Atack1(this, this.path+"spr_Attack_strip.png"),
+    new Dash(this, `../../../sprites/player/spr_Dash_strip.png`),
+    new Dead(this, `../../../sprites/player/spr_Death_strip.png`),
+    new Jump(this, `../../../sprites/player/spr_Jump_strip.png`),
+    new SpeenAtack(this, `../../../sprites/player/spr_SpinAttack_strip.png`),
+    new Warrior(this, `../../../sprites/Player/spr_Taunt_strip.png`),
+  ] 
 }
 
 

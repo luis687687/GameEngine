@@ -8,6 +8,7 @@ import GameBuilder from "./GameBuilder.js"
 class BaseObject{
 
   #realX = 0 //Esse é importante, principalmente para os objectos que rotacionam no eixo y e perdem a referencia base
+  static objectId = 0 //permite identificar unicamente cada objecto
   constructor(game, width = 210, height = 190){
     this.game = game
     this.imgElement = undefined
@@ -39,12 +40,14 @@ class BaseObject{
       this.game = this.game
 
       this.setAllXLimit()
+      BaseObject.objectId++
     }
     else 
       throw "Erro passe a uma instancia do Game"
     
   }
 
+  
   update(){ }//para ser subscrito
 
   /**
@@ -146,11 +149,14 @@ class BaseObject{
       if(value <= this.game.paddingX)
         return
       }
+    this.setXListener(value)
     this.x = value
-    this.setXListener()
+    this.getRealCenterX()
+    
   }
   /**listener to setX */
   setXListener(){}
+  beforeOrientationChange(){}
 
   moveLeft(){
     if(!this.isInitialOrientation()){ //sentido de direcção mudou kkkkkk interessante
@@ -227,9 +233,10 @@ class BaseObject{
     if(!this.move) return
     if(orientation != GameObjectOrientation.left && orientation != GameObjectOrientation.right)
       return //not valid orientation
+    
     this.orientation = orientation
     this.x = this.#invertedXCoord() //inversor de
-    this.onOrientationChange()
+    this.onOrientationChange(this.x)
   }
 
   #invertedXCoord(){
@@ -256,6 +263,10 @@ class BaseObject{
     this.#justRun = true
     if(!this.isInitialOrientation())
       this.setOrientation(this.orientation)
+    this.editalbleRunnOnlyOneTime()
+  }
+  editalbleRunnOnlyOneTime(){ //subscrevivel
+
   }
 
 
@@ -286,6 +297,11 @@ class BaseObject{
   }
   
   isInitialOrientation(){return this.orientation == GameObjectOrientation.right}
+  
+  /**rotorna a distancia de umobjecto */
+  getDistanceOf(object){
+    return Math.abs(this.getRealCenterX() - object.getRealCenterX())
+  }
 
 
   

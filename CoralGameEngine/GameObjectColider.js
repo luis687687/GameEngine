@@ -7,6 +7,7 @@ export default class GameObjectColider extends BaseObject {
     this.backgroundColor = "transparent"
     this.feel = true //indica se é sentivel
     this.typeColider = true
+    
   }
 
   update(){
