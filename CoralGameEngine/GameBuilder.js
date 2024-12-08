@@ -1,12 +1,13 @@
 import GameInput from "./Controllers/GameInput.js"
 import GameObject from "./GameObject.js"
+import ColisionSystem from "./Systems/ColisionSystem.js"
 
 
 
 var self
 class GameBuilder {
   constructor() {
-    this.timer = 0
+    
     this.normalFPS = 1000 //por segundo
     this.fps = 24
     self = this
@@ -21,31 +22,29 @@ class GameBuilder {
     this.animate() // cria o chamador dos updates
     this.gameSpeed = 1.5
     this.timer = 0
+    this.colisionSystem = new ColisionSystem(this)
   }
-
   /***
    * Actualizações globais no jogo
    */
   update(){ // Para ser subscrito
 
   }
-
   /**
    * Responsavel por chamar os metodos update de todos os elementos do jogo, infinitamente
    */
   animate(){ 
     this.context.clearRect(0,0, this.width, this.height)
     requestAnimationFrame((params) => {
-      if(params - this.timer >= 1000/this.fps){
-        this.timer = params
-      }
-      
-      if(!self)
-        return
+      this.timer = params
+
+      if(self instanceof GameBuilder){
         self.animate()
+        self.colisionSystem.checkColision()
         self.update()
-        self.#updateAllGameObjects()
+        self.#updateAllGameObjects()}
       })
+      
   }
   /**
    * Cria o canvas
@@ -95,25 +94,33 @@ class GameBuilder {
   }
 
 
-  #drawAllGameObjects(){
-    for(const gameObject of this.allObjects)
-      gameObject.draw()
-    
-  }
 
+  /**
+   * Responsavel por desenhar em cada frame todos os elementos do jogo
+   */
   #updateAllGameObjects(){
     for(const gameObject of this.allObjects){
       gameObject.updateAndDraw()
     }
-    
   }
 
+  /**Redimensiona a tela no resize do navegador */
   #persistDimensionOnResizing(){
     const that = this
     window.onresize = function(){
       that.#setDimensionFromCssStyle()
-      //that.#drawAllGameObjects() // garantir o desenho, depois de resetar a dimensão do canvas
-    }
+      that.#updateAllOfChildrenRelationsWithDimension()
+    } 
+  }
+
+
+  /**Actualiza as larguras dos objectos, quando redimensionado */
+  #updateAllOfChildrenRelationsWithDimension(){
+    this.allObjects.map((obj) => {
+      if(obj instanceof GameObject){
+        obj.callOnResizeWidth()
+      }
+    })
   }
 
   /**

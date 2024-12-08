@@ -1,0 +1,28 @@
+TrackerGameObject extende de GameObject, é um tipo de objecto de jogo que implementa a capacidade de usar um outro objecto de jogo como referencia
+graças aos metodos 
+Isso é util porque, para elementos como background, temos como referencia o elemento player, para monitorar o seu moviemnto, caso o player ordenar (codigo implementado no player), o background reage, no caso, se move
+
+import GameObject from "./GameObject.js"
+
+/**
+ * Esse tipo de GameObject pode pegar uma referencia de outro objecto
+ * Util para fazer, por exemplo, o background pegar a referencia do player em movimento
+ */
+export default class TrackerGameObject extends GameObject {
+  constructor(game){
+    super(game)
+    this.keys = this.game.keys.actives
+   
+  }
+  /**subscreve */
+  update(){
+    this.keys = this.game.keys.actives //actualiza as chaves
+    this.referenceFrame(this.reference)
+  }
+  /**Intercala o update e pega o objecto de referencia do jogo */
+  referenceFrame(){} //**para ser subscrito */
+  /**Faz dois desenhos */
+  setObjectReference(reference){
+    this.reference = reference
+  }
+}
