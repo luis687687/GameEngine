@@ -24,12 +24,10 @@ export default class Enemy extends GameObjectWithPlayerReferece {
     this.#setTarget()
     /**enquanto colidem, ele nao muda a orientação */
     this.canToLook = true //no caso de eles estarem muito perto, fixa a direcção da orientatio
-    
   }
 
 
   safeUpdate(){ //so por segurana, nao subscrever
-
     this.#setTarget()
     this.lookToplayer()
     this.die()
@@ -51,8 +49,10 @@ export default class Enemy extends GameObjectWithPlayerReferece {
 
   die(){
     if(this.candestroy)
-      if(this.live <= 0)
+      if(this.live <= 0){
+        this.game.enemiesDied++
         this.destroy()
+      }
   }
 
   #setTarget(){
@@ -68,10 +68,8 @@ export default class Enemy extends GameObjectWithPlayerReferece {
     const time = this.isTheTimeToAtack()
     if(time) {
       if(this.pauseShot) return
-    
       this.bombs.push(this.getAtackType())
       this.pauseShot = true
-      
     }
     else{
       this.pauseShot = false
@@ -106,7 +104,6 @@ export default class Enemy extends GameObjectWithPlayerReferece {
 
 
   loockController(){
-    
     if(this.target.getColider().getRealCenterX() >= this.getColider().getRealCenterX()){
       if(this.orientation == GameObjectOrientation.left)
         this.setOrientation(GameObjectOrientation.right)

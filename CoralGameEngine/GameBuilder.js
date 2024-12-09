@@ -7,7 +7,6 @@ import ColisionSystem from "./Systems/ColisionSystem.js"
 var self
 class GameBuilder {
   constructor() {
-    
     this.normalFPS = 1000 //por segundo
     this.fps = 24
     self = this
@@ -41,10 +40,13 @@ class GameBuilder {
         self.animate()
         self.colisionSystem.checkColision()
         self.update()
-        self.#updateAllGameObjects()}
+        self.#updateAllGameObjects()
+        }
       })
-      
   }
+  
+
+  
   /**
    * Cria o canvas
    */
@@ -134,6 +136,7 @@ class GameBuilder {
   getChilds(ObjType){
     return this.allObjects.filter( e => e instanceof ObjType)
   }
+
   
 }
 

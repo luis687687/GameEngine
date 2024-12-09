@@ -27,7 +27,7 @@ export default class GameText extends GameObject {
     
   }
   update(){
-    console.log("A")
+    //console.log("A")
   }
 
   // async setFont(font){

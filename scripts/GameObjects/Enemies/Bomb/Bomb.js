@@ -10,9 +10,12 @@ export class Bomb extends Enemy {
     this.speed = 2.5
     this.x = x
     this.y = y
+    this.width = 60
+    this.height = 60
     if(orientation != GameObjectOrientation.right)
       this.setOrientation(orientation)
     this.coliderInitializer(0,0, w, h)
+    this.setAnimations()
     this.dontMoveAsReference = true
     
   }
@@ -37,8 +40,17 @@ export class Bomb extends Enemy {
   onColision(obj){
     if(obj instanceof Player){
       this.destroy()
-      console.log("Player")
+      obj.colidedEvent(1)
     }
+  }
+
+  setAnimations(){
+    this.animations = [
+      new Rolling(this)
+    ]
+
+
+    this.enterToAnimation(Rolling)
   }
 
 }

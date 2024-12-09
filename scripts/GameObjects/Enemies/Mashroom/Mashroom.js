@@ -6,15 +6,16 @@ import { Atack, Hart, Idle } from "./Animations.js";
 import { Bomb } from "../Bomb/Bomb.js";
 
 export class Mashroom extends Enemy {
-  constructor(game){
+  constructor(game, x, y){
     super(game, 120, 120)
     this.setAnimations()
     this.enterToAnimation(Idle)
     this.x = this.game.width/2 - this.width/2 +30
     this.coliderInitializer(25,this.height - 50 , 30, 50)
-    this.debug = true
     this.debugColor = "yellow"
     this.totalBombs = 1
+    this.x = x !== undefined ? x : this.x
+    this.y = y !== undefined ? y : this.y
   }
 
 
@@ -24,11 +25,12 @@ export class Mashroom extends Enemy {
       this.enterToAnimation(Hart)
     }
   }
+  
 
   atackPlayer(){
     if(!this.target) return
     const distance = (this.getDistanceOf(this.target.getColider()))
-    if(distance <= this.distanceToAtack && !this.isTheTargetAtack()){
+    if(distance <= this.distanceToAtack && !this.isTheTargetAtack() && this.target.life > 0){
       this.enterToAnimation(Atack)
       this.shotBomb()
     }
@@ -38,9 +40,9 @@ export class Mashroom extends Enemy {
 
   setAnimations(){
     this.animations = [ 
-      new Idle(this, "../../../../sprites/enemies/Mushroom/idle1.png"),
-      new Hart(this,  "../../../../sprites/enemies/Mushroom/hart.png"),
-      new Atack(this, "../../../../sprites/enemies/Mushroom/atack.png"),
+      new Idle(this, "./sprites/enemies/Mushroom/idle1.png"),
+      new Hart(this,  "./sprites/enemies/Mushroom/hart.png"),
+      new Atack(this, "./sprites/enemies/Mushroom/atack.png"),
     ]
   }
 

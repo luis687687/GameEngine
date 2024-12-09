@@ -1,0 +1,100 @@
+* {
+  border-radius: 10px;
+  overflow: hidden;
+  scroll-behavior: smooth;
+  color: black;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+:root{
+  --maincolor: rgb(228, 224, 221);
+}
+a{
+  font-family: Luis;
+  color: orange;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 40px;
+  position: absolute;
+  z-index: 20;
+}
+
+body {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: var(--maincolor);
+}
+
+.area {
+  width: min(100%, 600px);
+  height: 270px;
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-image: url("../sprites/player/capa.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: esconde forwards;
+  animation-timeline: scroll();
+  background-color: rgb(110, 255, 207);
+}
+
+@keyframes esconde {
+  0%{
+    scale: 1;
+  }
+  100%{
+    scale: 0;
+  }
+}
+.area::after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(0deg, var(--maincolor), transparent);
+}
+
+
+#game {
+  background-color: transparent;
+}
+
+.area-container{
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.pisc {
+  animation: pisca 2s;
+}
+span{
+  color: rgb(88, 88, 88);
+  z-index: 20;
+  margin-top: 80px;
+  font-weight: bolder;
+  font-family: luis;
+}
+
+@keyframes pisca {
+  0%{
+    background-color: red;
+  }
+  50%{
+
+  }
+}

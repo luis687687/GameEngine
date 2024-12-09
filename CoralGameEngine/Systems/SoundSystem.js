@@ -13,7 +13,6 @@ export default class SoundSystem {
 
 
   play(){
-    
     this.sound.play().catch(() => {
       window.addEventListener("keydown", ()=> {
         if(this.shoosed) return

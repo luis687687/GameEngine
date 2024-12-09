@@ -6,40 +6,25 @@ export default class AnimationState {
   #timer = 0
   constructor(gameObject, image, width, height){
     if(!(gameObject instanceof GameObject)) throw "Erro a animação deve receber a referencia de um GameObject"
-    this.imgObject = document.createElement("img")
     this.image = image
-    this.imgObject.src = this.image
     this.width = width
     this.height = height
-    this.frameBottomPadding = 19
-    this.frameHorizontalSpace = 0
-    this.firstXSpace = 62
-    this.frameX = this.firstXSpace
-    this.frameY = 0
     this.gameObject = gameObject
-    this.xFrameIteration = 0
-    this.yFrameIteration = 0
-    this.pastTime = 0
-    
-    this.frameRatio = 1.8
-    this.fps = 24
-    this.#timer = 0
     this.animationType = AnimationType.normal
-    this.speed = 1
+    this.#frameSettings()
+    this.#timersSettings()
+    this.#imageInstanteate()
     this.keys  = this.gameObject.game.keys.actives //Actualiza as teclas activas  
-   // this.rightLimit = this.gameObject.fixedrRightLimit //para garantir que a animação não saia da tela
     this.sound = null
-    
   }
   
   /** Controla quando a animação começa, o dev, pode aproveitar disso chamando o onStart */
   enter(){
     if(this.gameObject instanceof GameObject){
+      if(this.gameObject.actualAnimation != this)
+        this.soundPlay()
       this.gameObject.actualAnimation = this
-      
-      this.soundPlay()
       this.onStart()
-      
     }
   }
 
@@ -54,7 +39,6 @@ export default class AnimationState {
       this.#timer = this.gameObject.game.timer //actualiza o ultimo tempo esperado
     else
       return
-    
     const end =  this.#wenCanEndAnimation()
     this.#changeFrame()
     if(!end)
@@ -109,6 +93,34 @@ export default class AnimationState {
   }
   setSound(sound){
     this.sound = sound
+  }
+
+
+
+  /**setings */
+
+  #frameSettings(){    //configurações iniciais dos frames
+    this.frameBottomPadding = 19
+    this.frameHorizontalSpace = 0
+    this.firstXSpace = 62
+    this.frameY = 0
+    this.xFrameIteration = 0
+    this.yFrameIteration = 0
+    this.frameRatio = 1.8
+    this.frameX = this.firstXSpace
+  }
+
+  /**Controladores de tempo */
+  #timersSettings(){
+    this.pastTime = 0
+    this.fps = 24
+    this.#timer = 0
+    this.speed = 1
+  }
+
+  #imageInstanteate(){
+    this.imgObject = document.createElement("img")
+    this.imgObject.src = this.image
   }
 
  

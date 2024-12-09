@@ -12,31 +12,16 @@ class BaseObject{
   constructor(game, width = 210, height = 190){
     this.game = game
     this.imgElement = undefined
-    
     if(this.game instanceof GameBuilder){
       this.game.recognizeChildren(this)
       this.animations = []
       this.width = width
       this.height = height
-      this.xlimiter = this.width-this.width/2
-      this.ylimiter = this.height //valor a somar no limit y
-      this.inferiorLimit = this.game.height - this.ylimiter 
-      this.y = this.inferiorLimit
-      this.x = 0
-      this.limitedHorizontal = false
-      this.limitedVertical = false
-      this.speed = 1
       this.actualAnimation = null
-      this.leftLimiter = this.width
-      this.topLimiter = this.height
       this.orientation = GameObjectOrientation.right
-      this.move = true
       this.debug = false
-      this.debugColor = "blue"
-      this.backgroundColor = "red"
-      this.colider = null
-      this.#realX = this.x //valor de x independente da rotacao
-      this.game = this.game
+      this.#setLimiters()
+      this.#setAparence()
       this.createReferenciedsFunctions() //**funcoes para objectos de referencias instaciarem referiensas em arrays */
       this.setAllXLimit()
       BaseObject.objectId++
@@ -80,7 +65,6 @@ class BaseObject{
 
   /** cria o elemento canvas com a imagem */
   drawerImageFromAnimation(){
-    
     this.game.context.drawImage(
       this.actualAnimation.imgObject, 
       this.actualAnimation.frameX-30, this.actualAnimation.frameY, this.actualAnimation.width, 
@@ -156,7 +140,6 @@ class BaseObject{
   /**listener to setX */
   setXListener(){}
   beforeOrientationChange(){}
-
   moveLeft(){
     if(!this.isInitialOrientation()){ //sentido de direcção mudou kkkkkk interessante
       return this.moveRight()
@@ -240,8 +223,9 @@ class BaseObject{
     if(orientation != GameObjectOrientation.left && orientation != GameObjectOrientation.right)
       return //not valid orientation
     this.orientation = orientation
+    let ante = this.x
     this.x = this.#invertedXCoord() //inversor de
-    this.onOrientationChange(this.x)
+    this.onOrientationChange(orientation, ante, this.rightLimit)
     this.onRefereCieOrientations.forEach(eventListener => eventListener())
   }
 
@@ -313,6 +297,28 @@ class BaseObject{
   /**Para o funcionamento de objectos com referencias */
   createReferenciedsFunctions(){
     this.onRefereCieOrientations = []
+  }
+
+  #setLimiters(){ //define os limitadores da apresntação do gameobject
+    this.xlimiter = this.width-this.width/2
+    this.ylimiter = this.height //valor a somar no limit y
+    this.inferiorLimit = this.game.height - this.ylimiter 
+    this.y = this.inferiorLimit
+    this.x = 0
+    this.limitedHorizontal = false
+    this.limitedVertical = false
+    this.speed = 1
+    this.leftLimiter = this.width
+    this.topLimiter = this.height
+    this.#realX = this.x //valor de x independente da rotacao
+  }
+
+  #setAparence(){ /**Configura a aprensentação base */
+    this.move = true
+    this.debugColor = "blue"
+    this.backgroundColor = "red"
+    this.colider = null
+   
   }
 
 

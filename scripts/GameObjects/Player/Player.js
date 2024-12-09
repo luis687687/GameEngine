@@ -3,6 +3,7 @@ import GameObject from "../../../CoralGameEngine/GameObject.js";
 import { objectYPosition } from "../_constants.js";
 import { Atack1, Dash, Dead, Idle, JumAtack, Jump, SpeenAtack, Walk, Warrior } from "./Animations.js";
 import Enemy from "../Enemies/Enemy.js";
+import { Life1, Life2, Life3, Life4, Life5 } from "../HUD/HP/Animations.js";
 
 export default class Player extends GameObject {
   constructor(game){
@@ -13,15 +14,15 @@ export default class Player extends GameObject {
     this.enterToAnimation(Walk)
     this.coliderInitializer(30,this.height - 50 , 30, 50)
     this.isOnCenter = false
-    this.debug = true
     this.runned = false
+    this.life = 5
   }
 
   update(){
     this.runned = true
     this.moveHorizontal()
-    //console.log(this.onRefereCieOrientations)
-    // this.moveVertical()
+    this.#updateHud()
+    
   }
 
 
@@ -69,23 +70,52 @@ onColision(obj){
       obj.colidedEvent(this.actualAnimation.damage)
     }
   }
-  
+
 }
 
 setAnimations(){
-  this.path = "../../../sprites/player/"
+  this.path = "./sprites/player/"
   this.animations = [
     new Idle(this, this.path+"spr_Idle_strip.png"),
     new JumAtack(this, this.path+"spr_Leap_strip.png"),
     new Walk(this, this.path+"spr_Walk_strip.png"),
     new Atack1(this, this.path+"spr_Attack_strip.png"),
-    new Dash(this, `../../../sprites/player/spr_Dash_strip.png`),
-    new Dead(this, `../../../sprites/player/spr_Death_strip.png`),
-    new Jump(this, `../../../sprites/player/spr_Jump_strip.png`),
-    new SpeenAtack(this, `../../../sprites/player/spr_SpinAttack_strip.png`),
-    new Warrior(this, `../../../sprites/Player/spr_Taunt_strip.png`),
+    new Dash(this, `./sprites/player/spr_Dash_strip.png`),
+    new Dead(this, `./sprites/player/spr_Death_strip.png`),
+    new Jump(this, `./sprites/player/spr_Jump_strip.png`),
+    new SpeenAtack(this, `./sprites/player/spr_SpinAttack_strip.png`),
+    new Warrior(this, `./sprites/Player/spr_Taunt_strip.png`),
   ] 
 }
+
+tackHit(hit){
+  if(this.whenCantTakeHit()) return
+  this.life -= hit
+  if(this.life < 1){
+    this.game.gameOver()
+    this.game.hud.getHP().visible = false
+    this.enterToAnimation(Warrior)
+    return
+  }
+}
+
+whenCantTakeHit(){
+  return this.actualAnimation instanceof JumAtack || this.actualAnimation instanceof Jump || this.actualAnimation instanceof SpeenAtack
+}
+
+#updateHud(){
+  if(this.life == 5) this.game.hud.getHP().enterToAnimation(Life1)
+  if(this.life == 4) this.game.hud.getHP().enterToAnimation(Life2)
+  if(this.life == 3) this.game.hud.getHP().enterToAnimation(Life3)
+  if(this.life == 2) this.game.hud.getHP().enterToAnimation(Life4)
+  if(this.life == 1) this.game.hud.getHP().enterToAnimation(Life5)
+
+}
+
+callOnCalision(hit){
+  this.tackHit(hit)
+}
+
 
 
 

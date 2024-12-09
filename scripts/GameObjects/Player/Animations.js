@@ -22,7 +22,7 @@ export class Idle extends AnimationState {
     this.gameObject = gameObject
     this.xFrameIteration = 0
     this.yFrameIteration = 0
-    this.sound = new SoundSystem("../../../sounds/player/bre.mp3", true, 0.8, 2)
+    this.sound = new SoundSystem("./sounds/player/bre.mp3", true, 0.8, 2)
   }
  
   onInput(keys){
@@ -70,6 +70,7 @@ export class JumAtack extends AnimationStateAtack {
     this.frameRatio = 3 //define ate que percentagem do tempo a animação vai ser cortada, normal 1.8 é o ratio
     this.endX = this.gameObject.x + this.gameObject.width/2 +14
     this.damage = 5
+    this.sound = new SoundSystem("./sounds/player/voohammer.mp3", false, 0.9)
    
   }
 
@@ -83,19 +84,43 @@ export class JumAtack extends AnimationStateAtack {
   running(){ //running controller
    if(this.xFrameIteration > 20){
       this.gameObject.move = false
+      this.soundToLaunchHammerStop()
       if(this.gameObject.getColider()) this.gameObject.getColider().setX(this.endX + this.gameObject.coliderOffX)
       return
    }
-   if(this.xFrameIteration > 7)
+   if(this.xFrameIteration > 7) //para pausar o movimento
     this.gameObject.move = true
+  if(this.xFrameIteration > 13) //para chamar outro som
+    this.soundToLaunchHammer()
   }
   
   onStart(){
-    
+    this.justLaunch = false
+    this.justFall = false
     this.setedNewPosition = false
     this.savedX = this.gameObject.x
     this.gameObject.move = false
     this.endX = this.gameObject.x + this.gameObject.width/2 +14
+   }
+
+   soundToLaunchHammer(){
+    if(this.justLaunch) return
+    this.LaunchHammer = new SoundSystem("./sounds/player/spin.mp3", false, 0.9, 1.2)
+    this.LaunchHammer.playOnAnimation()
+    this.justLaunch = true
+   }
+
+   soundToLaunchHammerStop(){
+    this.LaunchHammer.pause()
+    this.soundToEnd()
+   }
+
+   soundToEnd(){
+    if(this.justFall) return
+    console.log("Fall")
+    this.soundEnd = new SoundSystem("./sounds/player/atack1.mp3", false, 0.9, 1.2)
+    this.soundEnd.playOnAnimation()
+    this.justFall = true
    }
   
 }
@@ -119,8 +144,7 @@ export class Walk extends AnimationState {
     this.xFrameIteration = 0
     this.yFrameIteration = 0
     this.fps = 15
-    
-    this.sound = new SoundSystem("../../../sounds/player/walking.mp3", true, 1)
+    this.sound = new SoundSystem("./sounds/player/walking.mp3", true, 1)
 
   }
 
@@ -164,7 +188,7 @@ export class Atack1 extends AnimationStateAtack {
     this.justRunn = false
     this.moveColider = 25
     this.damage = 2
-    this.sound = new SoundSystem("../../../sounds/player/atack1.mp3", true, 1)
+    this.sound = new SoundSystem("./sounds/player/atack1.mp3", true, 1)
   }
   onStart(){ /**Controlar o colisor no inicio dessa animação */
   
@@ -215,7 +239,7 @@ export class Atack1 extends AnimationStateAtack {
   }
   
   #finalSound(){
-    (new SoundSystem("../../../sounds/player/voohammer.mp3", false, 0.2, 1.1)).play()
+    (new SoundSystem("./sounds/player/voohammer.mp3", false, 0.2, 1.1)).play()
   }
   
 }
@@ -278,7 +302,7 @@ export class Jump extends AnimationState {
     this.gameObject = gameObject
     this.xFrameIteration = 0
     this.yFrameIteration = 0
-    
+    this.sound = new SoundSystem("./sounds/player/voohammer.mp3", false, 0.9)
     this.frameRatio = 3 //define ate que percentagem do tempo a animação vai ser cortada, normal 1.8 é o ratio
 
   }
@@ -325,7 +349,7 @@ export class SpeenAtack extends AnimationStateAtack {
     //this.rightLimit -= this.width/3.5
     this.fps = 60    
     this.frameRatio = 2.1
-    this.sound = new SoundSystem("../../../sounds/player/spin.mp3", false, 0.9)
+    this.sound = new SoundSystem("./sounds/player/spin.mp3", false, 0.9)
 
   }
   animationEnd(){
@@ -368,7 +392,13 @@ export class Warrior extends AnimationState {
     this.xFrameIteration = 0
     this.yFrameIteration = 0
     this.frameRatio = 2.2
-    //this.frameRatio = 2.1
-
+    this.sound = new SoundSystem("./sounds/player/screaming.mp3")
+  }
+  running(){
+    this.gameObject.move = false
+  }
+  animationEnd(){
+    this.gameObject.move = true
+    this.sound.pause()
   }
 }

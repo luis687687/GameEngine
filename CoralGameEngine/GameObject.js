@@ -10,7 +10,6 @@ export default class GameObject extends BaseObject {
     super(game, width , height)
     this.x = x
     this.y = y
-    
   }
 
   //colisores
