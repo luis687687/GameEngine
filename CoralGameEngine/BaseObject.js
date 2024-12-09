@@ -21,7 +21,6 @@ class BaseObject{
       this.xlimiter = this.width-this.width/2
       this.ylimiter = this.height //valor a somar no limit y
       this.inferiorLimit = this.game.height - this.ylimiter 
-     
       this.y = this.inferiorLimit
       this.x = 0
       this.limitedHorizontal = false
@@ -38,9 +37,10 @@ class BaseObject{
       this.colider = null
       this.#realX = this.x //valor de x independente da rotacao
       this.game = this.game
-
+      this.createReferenciedsFunctions() //**funcoes para objectos de referencias instaciarem referiensas em arrays */
       this.setAllXLimit()
       BaseObject.objectId++
+      this.visible = true
     }
     else 
       throw "Erro passe a uma instancia do Game"
@@ -54,10 +54,10 @@ class BaseObject{
    * Desenha objecto e coloca no this.game.context
    */
   draw(){
+    if(!this.visible) return
     if(this.game instanceof GameBuilder){ //Bom para receber sugestoes do vs code
       this.game.context.save() //salva o contexto anterior antes de rotacionar, caso haja rotacao 
       this.#drawerDirection()
-      
       if((this.actualAnimation instanceof AnimationState)){
         this.drawerImageFromAnimation()
         this.actualAnimation.updateFrame()
@@ -152,7 +152,6 @@ class BaseObject{
     this.setXListener(value)
     this.x = value
     this.getRealCenterX()
-    
   }
   /**listener to setX */
   setXListener(){}
@@ -217,9 +216,16 @@ class BaseObject{
    * @param {*} animationType 
    */
   enterToAnimation(animationType){
+    this.#muteAllSoundAnimation()
     this.animations.forEach(animation => {
       if(animation instanceof animationType)
         animation.enter()
+    })
+  }
+
+  #muteAllSoundAnimation(){
+    this.animations.forEach(animation => {
+        animation.soundPause()
     })
   }
 
@@ -233,10 +239,10 @@ class BaseObject{
     if(!this.move) return
     if(orientation != GameObjectOrientation.left && orientation != GameObjectOrientation.right)
       return //not valid orientation
-    
     this.orientation = orientation
     this.x = this.#invertedXCoord() //inversor de
     this.onOrientationChange(this.x)
+    this.onRefereCieOrientations.forEach(eventListener => eventListener())
   }
 
   #invertedXCoord(){
@@ -301,6 +307,12 @@ class BaseObject{
   /**rotorna a distancia de umobjecto */
   getDistanceOf(object){
     return Math.abs(this.getRealCenterX() - object.getRealCenterX())
+  }
+
+
+  /**Para o funcionamento de objectos com referencias */
+  createReferenciedsFunctions(){
+    this.onRefereCieOrientations = []
   }
 
 

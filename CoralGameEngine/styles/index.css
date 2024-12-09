@@ -10,11 +10,16 @@ body{
   width: min(100%, 500px);
   height: min(100%, 300px);
   margin: auto;
-  
+  background-color: blue;
   display: flex;
 }
 
 *{
   margin: 0;
   box-sizing: border-box;
+}
+
+@font-face {
+  font-family: Luis;
+  src: url("../_fonts/goodTimingbeg.otf");
 }

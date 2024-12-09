@@ -10,16 +10,10 @@ export default class BackgroundObject extends TrackerGameObject {
     this.#initialWidth()
     
   }
-
-
   /**subscreve */
   drawerWithoutAnimation(){
    this.#dubleDraw()
   }
-
-
-
-  
   #dubleDraw(){
     let sx = this.x + this.width - 1
     const sy = this.y
@@ -28,16 +22,11 @@ export default class BackgroundObject extends TrackerGameObject {
     }
     this.drawSimpleWithImage(this.x, this.y, this.width , this.height, this.imgElement)
     this.drawSimpleWithImage(sx, this.y, this.width , this.height, this.imgElement)
-    
   }
- 
-
   /**setar o width default */
   #initialWidth(){
     this.width = this.game.width
   }
-
-
   /**subscrita */
   onScreenResize(){ /** */
     this.#initialWidth()

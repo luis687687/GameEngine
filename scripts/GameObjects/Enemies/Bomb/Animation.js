@@ -1,4 +1,4 @@
-import AnimationState from "../../../../../CoralGameEngine/AnimationState";
+import AnimationState from "../../../../CoralGameEngine/AnimationState.js";
 
 export class Rolling extends AnimationState {
   constructor(gameObject, image, width, height){

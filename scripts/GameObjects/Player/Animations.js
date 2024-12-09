@@ -2,6 +2,7 @@ import AnimationState from "../../../CoralGameEngine/AnimationState.js";
 import GameColider from "../../../CoralGameEngine/GameObjectColider.js";
 import GameObject from "../../../CoralGameEngine/GameObject.js";
 import AnimationStateAtack from "./AnimationStateAtack.js";
+import SoundSystem from "../../../CoralGameEngine/Systems/SoundSystem.js";
 
 
 /**
@@ -21,7 +22,9 @@ export class Idle extends AnimationState {
     this.gameObject = gameObject
     this.xFrameIteration = 0
     this.yFrameIteration = 0
+    this.sound = new SoundSystem("../../../sounds/player/bre.mp3", true, 0.8, 2)
   }
+ 
   onInput(keys){
     if(this.gameObject instanceof GameObject){
       if(keys.includes("ArrowRight") || keys.includes("ArrowLeft")){
@@ -116,8 +119,11 @@ export class Walk extends AnimationState {
     this.xFrameIteration = 0
     this.yFrameIteration = 0
     this.fps = 15
+    
+    this.sound = new SoundSystem("../../../sounds/player/walking.mp3", true, 1)
 
   }
+
 
   onInput(keys){
     if(this.gameObject instanceof GameObject){
@@ -158,6 +164,7 @@ export class Atack1 extends AnimationStateAtack {
     this.justRunn = false
     this.moveColider = 25
     this.damage = 2
+    this.sound = new SoundSystem("../../../sounds/player/atack1.mp3", true, 1)
   }
   onStart(){ /**Controlar o colisor no inicio dessa animação */
   
@@ -189,22 +196,27 @@ export class Atack1 extends AnimationStateAtack {
 
   running(){ /**Se essa animação estiver nos seus 23 frames, caso o user aperte enter, não deve esperar essa aniamação a acabar para combinar atack */
    if(this.xFrameIteration > 20){
+    this.#finalSound()
     if(this.keys.includes("Enter")){
       this.xFrameIteration = 0 //reseta essa animação para lhe chmar de novo
       this.gameObject.enterToAnimation(Atack1)
     }
    }
+   this.#rePoseColider()
+  }
 
-   if(!this.justRunn){
-      
+  #rePoseColider(){
+    if(!this.justRunn){
       if(this.gameObject.getColider() && this.xFrameIteration > 4){ 
         this.gameObject.getColider().x+=this.moveColider
         this.justRunn = true
       }
    }
-   
   }
-
+  
+  #finalSound(){
+    (new SoundSystem("../../../sounds/player/voohammer.mp3", false, 0.2, 1.1)).play()
+  }
   
 }
 
@@ -275,7 +287,6 @@ export class Jump extends AnimationState {
     this.gameObject.enterToAnimation(Idle)
     this.gameObject.setX(this.gameObject.x + this.gameObject.width/2 - 16)
     this.gameObject.move = true
-    this.gameObject.getColider().feel = true
   }
 
   running(){
@@ -291,9 +302,6 @@ export class Jump extends AnimationState {
     if(this.keys.includes("Enter")) //se esiver a atacar
       this.xFrameIteration = 7 //ao entrar aqui, começa a animação apartir do frame 5
     this.gameObject.move = false
-    if(this.gameObject.getColider()){
-      this.gameObject.getColider().feel = false
-    }
   }
 }
 
@@ -317,6 +325,7 @@ export class SpeenAtack extends AnimationStateAtack {
     //this.rightLimit -= this.width/3.5
     this.fps = 60    
     this.frameRatio = 2.1
+    this.sound = new SoundSystem("../../../sounds/player/spin.mp3", false, 0.9)
 
   }
   animationEnd(){

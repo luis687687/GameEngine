@@ -1,6 +1,6 @@
-import { AnimationType } from "../../CoralGameEngine/_utils/constants.js";
-import AnimationState from "../../CoralGameEngine/AnimationState.js";
-import GameObject from "../../CoralGameEngine/GameObject.js";
+import { AnimationType } from "../../../../CoralGameEngine/_utils/constants.js";
+import AnimationState from "../../../../CoralGameEngine/AnimationState.js";
+import GameObject from "../../../../CoralGameEngine/GameObject.js";
 
 export class BackgroundAnimation extends AnimationState {
   constructor(gameObject, image, player){

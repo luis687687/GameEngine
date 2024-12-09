@@ -1,6 +1,4 @@
 import { GameObjectOrientation } from "../../../CoralGameEngine/_utils/constants.js";
-import AnimationState from "../../../CoralGameEngine/AnimationState.js";
-import GameColider from "../../../CoralGameEngine/GameObjectColider.js";
 import GameObject from "../../../CoralGameEngine/GameObject.js";
 import { objectYPosition } from "../_constants.js";
 import { Atack1, Dash, Dead, Idle, JumAtack, Jump, SpeenAtack, Walk, Warrior } from "./Animations.js";
@@ -22,7 +20,8 @@ export default class Player extends GameObject {
   update(){
     this.runned = true
     this.moveHorizontal()
-    this.moveVertical()
+    //console.log(this.onRefereCieOrientations)
+    // this.moveVertical()
   }
 
 

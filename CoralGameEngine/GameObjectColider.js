@@ -17,16 +17,4 @@ export default class GameObjectColider extends BaseObject {
       this.debugColor = "black"
   }
 
-
-  
-
-
-    /**
-   * Esse método serve para ser chamado quando dois ObjectColider colidem
-   * @param {*} objectColided 
-   */
-  // setColidedObject(objectColided){
-  //   this.objectColided = objectColided
-  //   this.onColision(objectColided) //para ser subscrito
-  // }
 }

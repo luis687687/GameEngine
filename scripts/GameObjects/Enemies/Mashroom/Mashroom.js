@@ -3,6 +3,7 @@ import { GameObjectWithPlayerReferece } from "../../GameObjectWithPlayerReferenc
 import Player from "../../Player/Player.js";
 import Enemy from "../Enemy.js";
 import { Atack, Hart, Idle } from "./Animations.js";
+import { Bomb } from "../Bomb/Bomb.js";
 
 export class Mashroom extends Enemy {
   constructor(game){
@@ -13,15 +14,9 @@ export class Mashroom extends Enemy {
     this.coliderInitializer(25,this.height - 50 , 30, 50)
     this.debug = true
     this.debugColor = "yellow"
-    /**enquanto colidem, ele nao muda a orientação */
-    this.canToLook = true //no caso de eles estarem muito perto, fixa a direcção da orientatio
+    this.totalBombs = 1
   }
 
-  safeUpdate(){ //poderia ter usado o enemyUpdateWithTarget, mas seguro
-    this.lookToplayer()
-    this.die()
-    this.canAtackPlayer()
-  }
 
   onColision(obj){
     this.canToLook = false
@@ -30,31 +25,16 @@ export class Mashroom extends Enemy {
     }
   }
 
-  canAtackPlayer(){
+  atackPlayer(){
     if(!this.target) return
     const distance = (this.getDistanceOf(this.target.getColider()))
-    if(distance <= this.distanceToAtack && !this.isTheTargetAtack())
+    if(distance <= this.distanceToAtack && !this.isTheTargetAtack()){
       this.enterToAnimation(Atack)
-  }
-
-  lookToplayer(){ //olhar para o centro do colider player
-    const distance = (this.getDistanceOf(this.target.getColider()))
-    if(distance >=  this.distanceToAtack)
-      this.canToLook = true
-    if(!this.canToLook) return
-    this.loockController()
-  }
-
-  loockController(){
-    if(this.target.getColider().getRealCenterX() >= this.getColider().getRealCenterX()){
-      if(this.orientation == GameObjectOrientation.left)
-        this.setOrientation(GameObjectOrientation.right)
-    }
-    else{
-      if(this.orientation == GameObjectOrientation.right)
-        this.setOrientation(GameObjectOrientation.left)
+      this.shotBomb()
     }
   }
+
+
 
   setAnimations(){
     this.animations = [ 
@@ -63,6 +43,16 @@ export class Mashroom extends Enemy {
       new Atack(this, "../../../../sprites/enemies/Mushroom/atack.png"),
     ]
   }
+
+  
+
+  getAtackType(){
+    const bomb = new Bomb(this.game, 20, 20, this.getColider().x, this.getColider().y, this.orientation)
+    return bomb
+  }
+
+
+
   
   
   

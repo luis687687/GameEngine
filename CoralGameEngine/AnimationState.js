@@ -28,13 +28,18 @@ export default class AnimationState {
     this.speed = 1
     this.keys  = this.gameObject.game.keys.actives //Actualiza as teclas activas  
    // this.rightLimit = this.gameObject.fixedrRightLimit //para garantir que a animação não saia da tela
+    this.sound = null
+    
   }
   
   /** Controla quando a animação começa, o dev, pode aproveitar disso chamando o onStart */
   enter(){
     if(this.gameObject instanceof GameObject){
       this.gameObject.actualAnimation = this
+      
+      this.soundPlay()
       this.onStart()
+      
     }
   }
 
@@ -90,4 +95,21 @@ export default class AnimationState {
   isNormalMode(){
     return this.animationType == AnimationType.normal
   }
+
+  soundPlay(){
+    
+    if(this.sound){
+      if(this.sound.isRunning()) return
+      this.sound.playOnAnimation()
+    }
+  }
+  soundPause(){
+    if(this.sound)
+      this.sound.pause()
+  }
+  setSound(sound){
+    this.sound = sound
+  }
+
+ 
 }

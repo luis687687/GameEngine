@@ -37,7 +37,6 @@ class GameBuilder {
     this.context.clearRect(0,0, this.width, this.height)
     requestAnimationFrame((params) => {
       this.timer = params
-
       if(self instanceof GameBuilder){
         self.animate()
         self.colisionSystem.checkColision()

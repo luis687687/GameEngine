@@ -8,16 +8,18 @@ export class GameObjectWithPlayerReferece extends TrackerGameObject {
     this.width = width !== undefined ? width: this.width
     this.height = height !== undefined ? height : this.height
     this.setOnGround()
+    this.dontMoveAsReference = false
   }
   /**Subscreve */
   referenceFrame(reference){ //Controlar quando mover o background
-    
-    if(this.game.person instanceof Player)
+
+    if(this.game.person instanceof Player)  
      this.setObjectReference(this.game.person)
     if(this.keys.includes("ArrowRight")){
       if(this.reference instanceof Player){
         if(this.reference.move && this.reference.isOnCenter){
-          this.moveLeft()
+          if(this.dontMoveAsReference) return
+            this.moveLeft()
         }
       }
     }
