@@ -1,21 +1,27 @@
-import GameObject from "../../../../CoralGameEngine/GameObject.js";
+
+import GameScreen from "../../../../CoralGameEngine/GameScreen.js";
+import BoardGameOver from "./components/BoardGameOver/BoardGameOver.js";
 import { TextGameOver } from "./TextGameOver.js";
 
-export default class AreaGameOver extends GameObject {
+export default class AreaGameOver extends GameScreen {
 
   constructor(game){
     super(game)
-    this.width = this.game.width
-    this.height = this.game.height
-    this.x = 0
-    this.y = 0
-    this.backgroundColor = "rgba(0,0,0,0.7)"
-    this.putText()
+    this.instateate()
+    
   }
 
 
-  putText(){
-    this.text = new TextGameOver(this.game)
+  
+  
+  update(){
+    this.game.pause = true
+  }
+  instateate(){
+    this.board = new BoardGameOver(this.game, this, this.width*0.3, this.game.height*0.9)
+  }
+  onDestroy(){
+    this.game.pause = false
   }
 
 }

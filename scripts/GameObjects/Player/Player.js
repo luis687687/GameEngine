@@ -3,26 +3,28 @@ import GameObject from "../../../CoralGameEngine/GameObject.js";
 import { objectYPosition } from "../_constants.js";
 import { Atack1, Dash, Dead, Idle, JumAtack, Jump, SpeenAtack, Walk, Warrior } from "./Animations.js";
 import Enemy from "../Enemies/Enemy.js";
-import { Life1, Life2, Life3, Life4, Life5 } from "../HUD/HP/Animations.js";
+import { Life1, Life2, Life3, Life4, Life5 } from "../GUI/HUD/HP/Animations.js";
 
 export default class Player extends GameObject {
   constructor(game){
-    super(game, 170, 126, 0, game.height - 126 + objectYPosition)
-    this.limitedHorizontal = true
-    this.limitedVertical = true
+    super(game, 170, 126, 0, 0, true, true, "Player")
     this.setAnimations()
-    this.enterToAnimation(Walk)
+    this.enterToAnimation(Idle)
     this.coliderInitializer(30,this.height - 50 , 30, 50)
     this.isOnCenter = false
     this.runned = false
     this.life = 5
+    this.use_gravity = true
+    this.setHPVisibility(true)
+    this.debug = true
+    
   }
 
   update(){
     this.runned = true
     this.moveHorizontal()
+    //this.moveVertical()
     this.#updateHud()
-    
   }
 
 
@@ -54,7 +56,7 @@ export default class Player extends GameObject {
   }
 
   stopOnCenter(){
-    const ratio = 1.3
+    const ratio = 1.6
     const pointToStop = this.game.width/ratio
     if(this.x + this.width >= pointToStop)
     {
@@ -66,7 +68,6 @@ export default class Player extends GameObject {
 onColision(obj){
   if(this.actualAnimation instanceof Atack1 || this.actualAnimation instanceof JumAtack || this.actualAnimation instanceof SpeenAtack){
     if(obj instanceof Enemy){
-      console.log("E")
       obj.colidedEvent(this.actualAnimation.damage)
     }
   }
@@ -93,17 +94,22 @@ tackHit(hit){
   this.life -= hit
   if(this.life < 1){
     this.game.gameOver()
-    this.game.hud.getHP().visible = false
+    this.setHPVisibility(false)
     this.enterToAnimation(Warrior)
     return
   }
 }
 
+setHPVisibility(val){
+  if(this.game.hud)
+    this.game.hud.getHP().visible = val
+}
 whenCantTakeHit(){
   return this.actualAnimation instanceof JumAtack || this.actualAnimation instanceof Jump || this.actualAnimation instanceof SpeenAtack
 }
 
 #updateHud(){
+  if(!this.game.hud) return
   if(this.life == 5) this.game.hud.getHP().enterToAnimation(Life1)
   if(this.life == 4) this.game.hud.getHP().enterToAnimation(Life2)
   if(this.life == 3) this.game.hud.getHP().enterToAnimation(Life3)

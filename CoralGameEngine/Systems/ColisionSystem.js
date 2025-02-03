@@ -15,12 +15,14 @@ export default class ColisionSystem {
   }
   /**Chamado no game builder */
   checkColision(){
+  if(this.game.pause) return //pausa para nao checar
    this.#getAllGameObjectWithColider()
    this.#listenColisionFromGameObjectWithColider()
   }
   #getAllGameObjectWithColider(){
-    this.gameObjects = this.game.allObjects.filter( e => e.getColider && e.getColider() instanceof GameObjectColider)
+    this.gameObjects = this.game.getAllObjects().filter( e => e.getColider && e.getColider() instanceof GameObjectColider)
   }
+
   /**Verificador de colisao implementado pela função check */
   #listenColisionFromGameObjectWithColider(){
     this.gameObjects.forEach( (obj) => {

@@ -1,0 +1,75 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../globals.css">
+  <script src="./login.js"></script>
+</head>
+<body>
+  <!-- <div class="top">
+    <div class="main-container">
+
+    </div>
+  </div> -->
+
+  <div class="main-container container center-child local-container">
+    <h1 class="text local-title">Bem-vindo de volta</h1>
+    <form class="form" onsubmit="return login(event)" oninvalid="alert(111)">
+     
+      <input type="text" name="email" placeholder="Email de usuário" required>
+      <input type="password" name="password" placeholder="A senha de acesso" required id="pass1">
+      
+      <div class="form-btns">
+        <button class="button btn-primary">Log in</button>
+        <a class="button btn-secondary" href="/create">Criar uma conta</a>
+      </div>
+    </form>
+  </div>
+    
+</body>
+</html>
+<script src="../appcontroller.js"></script>
+  <script>
+    checkSession().then((response) => {
+      if(response.leavel == 1)
+        location = "/admin"
+      else
+        location = "/"
+    })
+
+    
+    const login = async (event) => {
+      event.preventDefault()
+      const form = event.target
+      const send = {
+        email: form.email.value, password: form.password.value
+      }
+      const response = await fetch("/user/login", {
+        method: "post",
+        headers: {"Content-type" : "Application/json"},
+        body: JSON.stringify(send)
+      })
+      const json = await response.json()
+      localStorage.setItem("data", JSON.stringify(json))
+      if(json.leavel == 1)
+        location = "/admin"
+      else
+        location = "/"
+    }
+  </script>
+<style>
+
+  
+ 
+  .local-container {
+    gap: 20px;
+  }
+  .local-title {
+    max-width: 400px;
+    text-align: center;
+  }
+</style>
+
+
+

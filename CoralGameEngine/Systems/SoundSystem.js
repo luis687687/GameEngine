@@ -4,36 +4,45 @@ export default class SoundSystem {
     this.sound.src = src
     this.sound.volume = volume
     this.sound.loop = loop
-    console.log(this.sound.playbackRate, "initial")
+    // console.log(this.sound.playbackRate, "initial")
     this.sound.playbackRate = velocity
-    this.shoosed = false
+    this.shoosed = false //ja aberta por uma das opções
 
     
   }
 
 
   play(){
-    this.sound.play().catch(() => {
-      window.addEventListener("keydown", ()=> {
-        if(this.shoosed) return
-        this.shoosed = true
-        this.sound.play()
-      }, {once: true})
+    this.sound.play().then(e => {
+      this.shoosed = true
+    }).catch((e) => {
+      //Ajuda a reforçar o autoplay, caso o play de cima falhar
+      // console.log("Deu erro aqui ! ", e)
+      this.#playWhenKeyDown() //espera uma tecla pressionada
+      this.#playWhenClicked() //espera um click do teclado, ou screen
+     
 
-      window.addEventListener("click", ()=> {
-        if(this.shoosed) return
-        this.shoosed = true
-        this.sound.play()
-      }, {once: true})
 
-      window.addEventListener("keyup", ()=> {
-        if(this.shoosed) return
-        this.shoosed = true
-        this.sound.play()
-      }, {once: true})
       
     })
   }
+
+  #playWhenKeyDown(){
+    window.addEventListener("keydown", ()=> {
+      if(this.shoosed) return
+      // console.log("Tecla down")
+      this.play()
+    }, {once: this.shoosed})
+  }
+
+  #playWhenClicked(){
+    window.addEventListener("click", ()=> {
+      if(this.shoosed) return
+      // console.log("Tecla click")
+      this.play()
+    }, {once: this.shoosed})
+  }
+
   pause(){
     this.sound.pause()
     this.sound.currentTime = 0

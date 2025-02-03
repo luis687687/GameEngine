@@ -1,0 +1,83 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+    <link rel="stylesheet" href="../globals.css">
+</head>
+<body>
+  <!-- <div class="top">
+    <div class="main-container">
+
+    </div>
+  </div> -->
+
+  <div class="main-container container center-child local-container anime-horizontal-show">
+    <h1 class="text local-title">Construa jogos Rapidamente!</h1>
+    <form class="form" onsubmit="return create(event)" oninvalid="alert(111)">
+      <input type="text" name="name" placeholder="Nome do usuário" required>
+      <input type="text" name="email" placeholder="Email de usuário" required>
+      <input type="password" name="password" placeholder="A senha de acesso" required oninput="monitorepass(this, 'pass2')" id="pass1">
+      <input type="password" name="confirm_pass" placeholder="Confirmação da senha" required id="pass2" oninput="monitorepass(this, 'pass1')">
+      <div class="form-btns">
+        <button class="button btn-primary">Criar</button>
+        <a class="button btn-secondary" href="/login">Já tenho uma conta</a>
+      </div>
+    </form>
+  </div>
+    
+</body>
+</html>
+
+
+<script>
+
+
+
+  function monitorepass(actual, el){
+    const loock = document.getElementById(el)
+    if(actual.value != loock.value && (actual.value || loock.value))
+    {
+      actual.classList.add("bad-input")
+      loock.classList.add("bad-input")
+    }
+    else{
+      actual.classList.remove("bad-input")
+      loock.classList.remove("bad-input")
+    }
+  }
+
+
+  async function create(event){
+    event.preventDefault()
+    const form = event.target
+    if(form.password.value != form.confirm_pass.value)
+      return console.log("As senhas não batem !")
+    const send_obj = {
+      name: form.name.value,
+      email: form.email.value,
+      password: form.password.value
+    }
+  
+    const response = await fetch("/user", {
+      method: 'post',
+      headers: {'Content-Type': 'Application/json'},
+      body: JSON.stringify(send_obj)
+    })
+    const json_response = await response.json()
+    location = "/login"
+}
+</script>
+
+
+
+<style>
+ 
+  .local-container {
+    gap: 20px;
+  }
+  .local-title {
+    max-width: 400px;
+    text-align: center;
+  }
+</style>

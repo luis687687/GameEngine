@@ -8,14 +8,15 @@
 body {
   display: flex;
   flex-direction: column;
+  
 }
 :root{
-  --maincolor: rgb(228, 224, 221);
+  --maincolor: black;
 }
 a{
   font-family: Luis;
   color: orange;
-  cursor: pointer;
+  cmd: pointer;
   text-decoration: none;
   font-size: 40px;
   position: absolute;
@@ -25,7 +26,7 @@ a{
 body {
   padding-top: 10px;
   padding-bottom: 10px;
-  background-color: var(--maincolor);
+  background-color: black;
 }
 
 .area {

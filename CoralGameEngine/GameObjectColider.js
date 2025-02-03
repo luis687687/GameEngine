@@ -5,7 +5,7 @@ export default class GameObjectColider extends BaseObject {
     super(game,  width, height)
     //this.debug = true
     this.backgroundColor = "transparent"
-    this.feel = true //indica se é sentivel
+    this.feel = true //indica se é sensivel
     this.typeColider = true
     
   }
@@ -16,17 +16,4 @@ export default class GameObjectColider extends BaseObject {
     else
       this.debugColor = "black"
   }
-
-
-  
-
-
-    /**
-   * Esse método serve para ser chamado quando dois ObjectColider colidem
-   * @param {*} objectColided 
-   */
-  // setColidedObject(objectColided){
-  //   this.objectColided = objectColided
-  //   this.onColision(objectColided) //para ser subscrito
-  // }
 }

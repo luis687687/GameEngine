@@ -3,13 +3,11 @@ body{
   background-color: black;
 }
 #game_area{
-
-  width: min(100%, 680px);
-  height: min(100%, 440px);
+  width: 100%;
+  height: 100%;
 }
 #game {
-  width: 100%;
-  margin: auto;
+  flex: 1;
   background-color: blue;
   display: flex;
 }

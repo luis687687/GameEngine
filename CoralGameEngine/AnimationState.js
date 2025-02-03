@@ -13,13 +13,15 @@ export default class AnimationState {
     this.animationType = AnimationType.normal
     this.#frameSettings()
     this.#timersSettings()
-    this.#imageInstanteate()
+    this.imageInstanteate()
     this.keys  = this.gameObject.game.keys.actives //Actualiza as teclas activas  
     this.sound = null
+    this.pauseSensivity = true
   }
   
   /** Controla quando a animação começa, o dev, pode aproveitar disso chamando o onStart */
   enter(){
+    if(this.gameObject.canBePaused()) return
     if(this.gameObject instanceof GameObject){
       if(this.gameObject.actualAnimation != this)
         this.soundPlay()
@@ -39,8 +41,8 @@ export default class AnimationState {
       this.#timer = this.gameObject.game.timer //actualiza o ultimo tempo esperado
     else
       return
-    const end =  this.#wenCanEndAnimation()
-    this.#changeFrame()
+    const end =  this.whenCanEndAnimation()
+    this.changeFrame()
     if(!end)
     this.running() //controlador de execução enquanto animação roda
   }
@@ -48,10 +50,17 @@ export default class AnimationState {
   /**
    * Quando a animação para ?
    */
-  #wenCanEndAnimation(){
-    if(this.frameX + this.firstXSpace*this.frameRatio >= this.imgObject.width){
-      this.frameX = this.firstXSpace
-      this.xFrameIteration = 0
+
+  conditionToEnd(){
+    return this.frameX + this.firstXSpace*this.frameRatio >= this.imgObject.width
+  }
+  internalAnimationEndConfig(){
+    this.frameX = this.firstXSpace
+    this.xFrameIteration = 0
+  }
+  whenCanEndAnimation(){
+    if(this.conditionToEnd()){
+      this.internalAnimationEndConfig()
       this.animationEnd()
       return true
     }
@@ -71,7 +80,8 @@ export default class AnimationState {
   onStart(){} //Quando começa
 
   /**Actualiza frame localmente */
-  #changeFrame(){
+  changeFrame(){
+    if(this.gameObject.canBePaused() && this.pauseSensivity) return
     this.frameX = this.isNormalMode() ? this.firstXSpace + this.xFrameIteration * (this.width + this.frameHorizontalSpace) : this.xFrameIteration
     this.xFrameIteration += this.isNormalMode() ? 1 : this.speed * this.gameObject.game.gameSpeed
   }
@@ -118,9 +128,14 @@ export default class AnimationState {
     this.speed = 1
   }
 
-  #imageInstanteate(){
+  imageInstanteate(){
     this.imgObject = document.createElement("img")
     this.imgObject.src = this.image
+  }
+
+
+  #animationCanBePaused(){
+    
   }
 
  

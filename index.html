@@ -4,20 +4,188 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <link rel="stylesheet" href="./CoralGameEngine/styles/index.css">
-  <link rel="stylesheet" href="w/external.css">
+  <link rel="stylesheet" href="globals.css">
 </head>
 <body>
-  <div class="area-container">
-    <div class="area">
+  <div id="area">
+    <div class="top-bar ">
+      <div class="main-container top-container">
+        <div class="top-right">
+          <h2>Game Engine</h2>
+        </div>
+        <div class="top-left">
+          <div class="top-menu">
+            
+              <a href="">Play</a>
+              
+              <a href="">Github</a>
+              <a href="" onclick="logout()">Sair</a>
+            
+          </div>
+          <div class="user-area">
+            <div class="avatar"></div>
+            <div class="username" id="username"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-container body ">
+      <div class="body-child">
+          <!-- <div class="left">
+            <h2>Js puro</h2>
+            <div class="local-title"><h1>Coral</h1> <h1>Engine</h1></div>
+        </div> -->
+        <div class="right">
+          <div id="game"></div>
+        </div>
+      </div>
+     
     </div>
   </div>
   
-  <div id="game">
-  </div>
+  
+  <!-- <div id="game">
+  </div> -->
 </body>
 </html>
 
 <!-- <script src="cop.js" type="module"></script> -->
 
+
 <script src="./Game.js" type="module"></script>
-<script src="w/external.js"></script>
+<script src="./appcontroller.js"></script>
+
+
+
+<script>
+  
+  checkSession().then( response => {
+    if(response.status != "ok")
+      logout()
+    else{
+      area.style.opacity = "1"
+      username.innerText = response.user_name
+    }
+  } ).catch( error => {
+    logout()
+  })
+
+</script>
+
+<style>
+  *{
+    color: white;
+    font-weight: initial !important;
+    user-select: none;
+  }
+  h2{
+    font-weight: 600 !important;
+  }
+  .top-container {
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .top-container ul {
+    display: flex;
+    gap: 15px;
+    list-style: none;
+  }
+  .top-container ul li {
+    opacity: 0.5;
+  }
+  .top-container ul li:first-child {
+    opacity: 1;
+  }
+  .top-container ul li:hover {
+    opacity: 1;
+  }
+  a {
+    text-decoration: none;
+  }
+
+  .top-container > div {
+    display: flex;
+    align-items: center;
+
+  }
+
+
+  h1{
+    font-weight: 900 !important;
+  }
+  .body {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    align-items: center;
+    
+  }
+  .body .left h1{
+    max-width: 400px !important;
+  }
+  .body .right{
+    flex: 4;
+
+  }
+  .body .left{
+   
+   
+
+  }
+  #game{
+    flex: 1;
+  }
+  
+
+  .body .right {
+    display: flex;
+    background-color: white;
+   height: 540px;
+  }
+
+  .body-child{
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    gap: 32px;
+  }
+  .body-child h1{
+    
+    font-size: 120px;
+    line-height: 0.9em;
+  }
+
+  body > div:first-child {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    opacity: 0;
+  }
+  .user-area {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(127, 255, 212, 0.014);
+    padding: 5px;
+    padding-right: 10px;
+    border-radius: 70px;
+    width: 100%;
+    max-width: 170px;
+    overflow: hidden;
+    
+    
+  }
+
+  .user-area .username {
+    font-weight: bolder !important;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    line-clamp: 1;
+    max-width: 80px;
+    
+  }
+
+
+</style>

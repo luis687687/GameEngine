@@ -23,6 +23,7 @@ export class Idle extends AnimationState {
     this.xFrameIteration = 0
     this.yFrameIteration = 0
     this.sound = new SoundSystem("./sounds/player/bre.mp3", true, 0.8, 2)
+    this.pauseSensivity = false
   }
  
   onInput(keys){
@@ -79,9 +80,11 @@ export class JumAtack extends AnimationStateAtack {
     this.gameObject.enterToAnimation(Idle)
     this.gameObject.setX(this.endX)
     this.gameObject.move = true
+    this.gameObject.coliderTrackerX = true
   }
 
   running(){ //running controller
+    this.gameObject.coliderTrackerX = false
    if(this.xFrameIteration > 20){
       this.gameObject.move = false
       this.soundToLaunchHammerStop()

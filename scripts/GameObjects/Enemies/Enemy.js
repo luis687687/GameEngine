@@ -1,5 +1,6 @@
 import { GameObjectOrientation } from "../../../CoralGameEngine/_utils/constants.js";
 import GameBuilder from "../../../CoralGameEngine/GameBuilder.js";
+import {createScore} from "../../gameToServer.js";
 import { GameObjectWithPlayerReferece } from "../GameObjectWithPlayerReference.js";
 import AnimationStateAtack from "../Player/AnimationStateAtack.js";
 import Player from "../Player/Player.js";
@@ -20,10 +21,15 @@ export default class Enemy extends GameObjectWithPlayerReferece {
     this.bombs = []
     this.intervalToAtack = 2
     this.actualTimer = 0
+    this.value = 1
     this.pauseShot = false
-    this.#setTarget()
+
     /**enquanto colidem, ele nao muda a orientação */
     this.canToLook = true //no caso de eles estarem muito perto, fixa a direcção da orientatio
+
+
+    this.x = this.game.width/2 - this.width/2 +30
+    this.coliderInitializer(25,this.width - 50 , 30, 50)
   }
 
 
@@ -31,7 +37,8 @@ export default class Enemy extends GameObjectWithPlayerReferece {
     this.#setTarget()
     this.lookToplayer()
     this.die()
-    this.atackPlayer()
+    if(!this.game.pause) 
+      this.atackPlayer()
     this.enemyUpdateWithTarget()   /**update garantidamente com o target*/
   }
   
@@ -51,6 +58,8 @@ export default class Enemy extends GameObjectWithPlayerReferece {
     if(this.candestroy)
       if(this.live <= 0){
         this.game.enemiesDied++
+        this.game.playerscore+=this.value
+        createScore(this.game.playerscore, this.game.leavel)
         this.destroy()
       }
   }
@@ -58,6 +67,7 @@ export default class Enemy extends GameObjectWithPlayerReferece {
   #setTarget(){
     this.target = this.game.getChilds(Player)
     this.target = this.target && this.target[0]
+    
   }
 
   isTheTargetAtack(){
@@ -95,7 +105,9 @@ export default class Enemy extends GameObjectWithPlayerReferece {
 
 
   lookToplayer(){ //olhar para o centro do colider player
-    const distance = (this.getDistanceOf(this.target.getColider()))
+    const targetColider = this.target?.getColider()
+    if( !targetColider ) return
+    const distance = (this.getDistanceOf(targetColider))
     if(distance >=  this.distanceToAtack)
       this.canToLook = true
     if(!this.canToLook) return
@@ -103,7 +115,7 @@ export default class Enemy extends GameObjectWithPlayerReferece {
   }
 
 
-  loockController(){
+loockController(){
     if(this.target.getColider().getRealCenterX() >= this.getColider().getRealCenterX()){
       if(this.orientation == GameObjectOrientation.left)
         this.setOrientation(GameObjectOrientation.right)

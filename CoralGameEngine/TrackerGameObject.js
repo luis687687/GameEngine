@@ -1,11 +1,12 @@
 import BaseObject from "./BaseObject.js"
-import GameObject from "./GameObject.js"
+import ScreenComponent from "./ScreenComponents/ScreenComponent.js"
+
 
 /**
  * Esse tipo de GameObject pode pegar uma referencia de outro objecto
  * Util para fazer, por exemplo, o background pegar a referencia do player em movimento
  */
-export default class TrackerGameObject extends GameObject {
+export default class TrackerGameObject extends ScreenComponent {
   constructor(game, reference){
     super(game)
     this.keys = this.game.keys.actives

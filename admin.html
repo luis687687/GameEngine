@@ -1,0 +1,453 @@
+
+<html lang="pt-ao">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./CoralGameEngine/styles/index.css">
+  <link rel="stylesheet" href="globals.css">
+  
+</head>
+<body>
+  <div id="area">
+    <div class="top-bar ">
+      <div class="main-container top-container">
+        <div class="top-right">
+          <h2>Game Engine</h2>
+        </div>
+        <div class="top-left">
+          <div class="top-menu">
+            
+              <a href="./">Play</a>
+              
+              <a href="">Github</a>
+              <a href="" onclick="logout()">Sair</a>
+            
+          </div>
+          <div class="user-area">
+            <div class="avatar"></div>
+            <div class="username" id="username"></div>
+          </div>
+        </div>
+      </div>
+    </div>    <div class="main-container body ">
+     <div class="box">
+      <div class="boxtop">
+        <span>Utilizadores do sistema</span>
+        <input type="text" placeholder="pesquisar user" oninput="search(this)">
+      </div>
+
+      <table class="table">
+        <thead>
+          <tr><th>Nome</th><th>Email</th><th>Data de acesso</th><th>Data de expiração</th><th>Permissão</th></tr>
+        </thead>
+        <tbody id="corpotb">
+          <!-- <tr>
+            <td>
+              <div>
+                <div class="avatar"></div>
+                Luis Marques
+              </div>
+              
+            </td>
+              <td>luismarques687@gmail.com</td>
+              <td>2020-02-01 10:00:00</td>
+              <td>2020-02-01 10:00:00</td>
+              <td>
+                <div class="button btn-confirm">
+                  Activo
+                </div>
+              </td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <div class="avatar"></div>
+                Luis Marques
+              </div>
+              
+            </td>
+              <td>luismarques687@gmail.com</td>
+              <td>2020-02-01 10:00:00</td>
+              <td>2020-02-01 10:00:00</td>
+              <td>
+                <div class="button btn-confirm">
+                  Activo
+                </div>
+              </td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <div class="avatar"></div>
+                Luis Marques
+              </div>
+              
+            </td>
+              <td>luismarques687@gmail.com</td>
+              <td>2020-02-01 10:00:00</td>
+              <td>2020-02-01 10:00:00</td>
+              <td>
+                <div class="button btn-confirm">
+                  Activo
+                </div>
+              </td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <div class="avatar"></div>
+                Luis Marques
+              </div>
+              
+            </td>
+              <td>luismarques687@gmail.com</td>
+              <td>2020-02-01 10:00:00</td>
+              <td>2020-02-01 10:00:00</td>
+              <td>
+                <div class="button btn-confirm">
+                  Activo
+                </div>
+              </td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <div class="avatar"></div>
+                Luis Marques
+              </div>
+              
+            </td>
+              <td>luismarques687@gmail.com</td>
+              <td>2020-02-01 10:00:00</td>
+              <td>2020-02-01 10:00:00</td>
+              <td>
+                <div class="button btn-confirm">
+                  Activo
+                </div>
+              </td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <div class="avatar"></div>
+                Luis Marques
+              </div>
+              
+            </td>
+              <td>luismarques687@gmail.com</td>
+              <td>2020-02-01 10:00:00</td>
+              <td>2020-02-01 10:00:00</td>
+              <td>
+                <div class="button btn-confirm">
+                  Activo
+                </div>
+              </td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <div class="avatar"></div>
+                Luis Marques
+              </div>
+              
+            </td>
+              <td>luismarques687@gmail.com</td>
+              <td>2020-02-01 10:00:00</td>
+              <td>2020-02-01 10:00:00</td>
+              <td>
+                <div class="button btn-confirm">
+                  Activo
+                </div>
+              </td>
+          </tr> -->
+        </tbody>
+      </table>
+     </div>
+    </div>
+  </div>
+  
+  
+  <!-- <div id="game">
+  </div> -->
+</body>
+</html>
+
+
+<script src="./appcontroller.js"></script>
+
+<script>
+  area.style.opacity = 0
+</script>
+
+<script>
+  
+  checkSession().then( response => {
+    if(response.status != "ok"){
+      logout()
+    }else{
+      area.style.opacity = "1"
+      username.innerText = response.user_name
+    }
+  } ).catch( error => {
+    location = "/login" 
+  })
+
+</script>
+
+<style>
+  *{
+    color: white;
+    font-weight: initial !important;
+    user-select: none;
+  }
+  h2{
+    font-weight: 600 !important;
+  }
+  .top-container {
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .top-container ul {
+    display: flex;
+    gap: 15px;
+    list-style: none;
+  }
+  .top-container ul li {
+    opacity: 0.5;
+  }
+  .top-container ul li:first-child {
+    opacity: 1;
+  }
+  .top-container ul li:hover {
+    opacity: 1;
+  }
+  a {
+    text-decoration: none;
+  }
+
+  .top-container > div {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    border: var(--border);
+    background-color: #ddd;
+  }
+
+  h1{
+    font-weight: 900 !important;
+  }
+  .body {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    align-items: center;
+    
+  }
+  .body .left h1{
+    max-width: 400px !important;
+  }
+  .body .right{
+    flex: 4;
+
+  }
+  .body .left{
+   
+   
+
+  }
+  #game{
+    flex: 1;
+  }
+  
+
+  .body .right {
+    display: flex;
+    background-color: white;
+   height: 500px;
+  }
+
+  .body-child{
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    gap: 32px;
+  }
+  .body-child h1{
+    
+    font-size: 120px;
+    line-height: 0.9em;
+  }
+
+  body > div:first-child {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    opacity: 0;
+  }
+  .user-area {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(127, 255, 212, 0.014);
+    padding: 5px;
+    padding-right: 10px;
+    border-radius: 70px;
+    width: 100%;
+    max-width: 170px;
+    overflow: hidden;
+    
+    
+  }
+
+  .user-area .username {
+    font-weight: bolder !important;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    line-clamp: 1;
+    max-width: 80px;
+    
+  }
+
+  .box {
+    width: 100%;
+    height: 400px;
+    background-color: var(--color-secondary);
+    overflow-y: scroll;
+    position: relative;
+    
+  }
+  .box > div:first-child{
+    background-color: #eee;
+    padding: 16px;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .box > div:first-child input {
+    height: 40px;
+    width: 100%;
+    max-width: 400px;
+  }
+  .box * {
+    color: var(--color-primary) !important;
+  }
+
+
+
+  /*/////////////////*/
+
+  .table {
+    width: 100%;
+    border: none;
+    text-align: left;
+
+
+  }
+  .table thead {
+    position: sticky;
+    top: 72px;
+    background-color: var(--color-primary);
+  }
+  .table th{
+    color: white !important;
+    padding: 10px;
+  }
+  td{
+   
+    align-items: center;
+    
+    padding: 10px;
+  }
+  td > div:first-child{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+</style>
+
+
+<script src="./appcontroller.js"></script>
+<script>
+  admin_id = ""
+  search_param = ""
+  session_id = ""
+
+  
+  checkAdmin().then(async (response)=> 
+    { 
+      admin_id = response.user_id
+      session_id = response.session_id
+      console.log(response)
+      createTable()
+    }
+
+  ).catch(console.log)
+  
+  async function createTable(){
+  //admin_id é global!
+  const resp = await fetch(`./user/sessions/${admin_id}`, {
+    method: "post",
+    headers: {"Content-type": "Application/json"},
+    body: JSON.stringify({
+      search: search_param,
+      session_id
+    })
+  })
+  
+  const sessions = await resp.json()
+  
+
+  corpotb.innerHTML = ""
+  if(!sessions.length) return
+  sessions.forEach(session => {
+    actived = session.account.status == 1
+    corpotb.innerHTML += `
+        <tr>
+            <td>
+              <div>
+                <div class="avatar"></div>
+                ${session.account.name}
+              </div>
+              
+            </td>
+              <td>${session.account.email}</td>
+              <td>${session.createdAt}</td>
+              <td>${session.expireAt}</td>
+              <td>
+                ${
+                  session.account.user_id != admin_id ? `<button class="button ${actived ? "btn-confirm" : "btn-primary"}" onclick="altereUser('${session.account.user_id}', '${session.account.status}')">
+                  ${actived ? "Activo" : "Desactivo"}
+                </button>` : "privilegiado"}
+              </td>
+          </tr>
+      `
+  });
+  }
+  async function altereUser(user_id, actualstatus){
+    console.log({actualstatus})
+    const status = actualstatus == 1 ? 0 : 1
+    const obj = {admin_id, user_id, status, session_id}
+    const response = await alterAccountStatus(obj)
+
+    await createTable()
+    console.log("Tabela remontada ", response)
+    
+  }
+
+  async function search(el){
+    search_param = el.value
+    await createTable()
+
+  }
+</script>

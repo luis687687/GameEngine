@@ -6,23 +6,50 @@ import GameColider from "./GameObjectColider.js";
 export default class GameObject extends BaseObject {
   #colider = null
   #startNow = true
-  constructor(game, width= 210, height = 190, x, y){
+  constructor(game, width= 210, height = 190, x, y, limitedX, limitedY, tagname){
     super(game, width , height)
     this.x = x
-    this.y = y
+    this.tagname = tagname
+    this.limitedHorizontal = limitedX
+    this.limitedVertical = limitedY
+    this.coliderTrackerX = true
+    this.coliderTrackerY = true
+    this.coliderFull = false
+    
+    this.setY(y)
+    
+  }
+
+
+  updateWithMyColider(){
+    if(!this.#colider) return
+    this.#colider.debug = this.debug
+    if(this.coliderTrackerY) this.#colider.y = this.#getColiderY()
+    if(this.coliderTrackerX) this.#colider.x =  this.#getColiderX()
+    if(this.coliderFull){
+      this.#colider.height = this.height
+      this.#colider.width = this.width
+    }
   }
 
   //colisores
-  coliderInitializer(offx, offy, w, h){
+  coliderInitializer(offx, offy, w, h, full){
+    this.coliderFull = full
     this.coliderOffX = offx
     this.coliderOffY = offy
     this.#colider = new GameColider(this.game, w ? w : this.width, h ? h : this.height, this.x, this.y)
     this.#coliderDefinition()
   }
   
+  #getColiderX(){
+    return this.x + this.coliderOffX
+  }
+  #getColiderY(){
+    return this.coliderOffY + this.y
+  }
   #coliderDefinition(){
-    this.#colider.x = this.x + this.coliderOffX
-    this.#colider.y = this.coliderOffY + this.y
+    this.#colider.x = this.#getColiderX()
+    this.#colider.y = this.#getColiderY()
     this.#colider.limitedHorizontal = this.limitedHorizontal
     this.#colider.limitedVertical = this.limitedVertical
     this.#colider.xlimiter = this.xlimiter
@@ -52,6 +79,11 @@ export default class GameObject extends BaseObject {
     if(!(this.#colider instanceof GameColider)) return
     this.#colider.moveBottom()
   }
+  listenGravityEffect(){
+    if(!(this.#colider instanceof GameColider)) return
+    this.#colider.y = this.coliderOffY + this.y
+  }
+
 
   onOrientationChange(x){
     if(!(this.#colider instanceof GameColider)) return
@@ -69,19 +101,20 @@ export default class GameObject extends BaseObject {
   #setFirstTimeInvertedOrientationReference(){
     this.#colider.orientation = (this.orientation) // rotacionar também
     this.#startNow = false //garante que seja so a primeira chamada
-    this.#colider.setX(this.x+this.coliderOffX)  // o seu colider precisa em primeiro pegar as coordenadas e...
+    this.#colider.x = (this.x+this.coliderOffX)  // o seu colider precisa em primeiro pegar as coordenadas e...
   }
 
  
   setXListener(v){
-    this.#colider.setX(v+this.coliderOffX)
+    this.#colider.x = (v+this.coliderOffX)
   }
   onDestroy(){
-    if(this.#colider instanceof GameObjectColider)
+    if(this.#colider instanceof GameObjectColider){
       this.#colider.destroy()
+    }
   }
 
-  /**esucutador subscrevivel */
+  /**esucutador subscrevivel */   
   onColision(objectColided){}
 
 

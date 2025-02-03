@@ -7,6 +7,7 @@ export default class BackgroundPlayerReference extends BackgroundObject {
     this.top = top
     this.height = height
     this.width = this.game.width
+    // console.log(this.width, " Hacker !")
     this.y = this.game.height - this.top * height
     
   }
