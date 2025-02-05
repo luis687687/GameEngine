@@ -1,6 +1,7 @@
 
 import { AnimationType } from "./_utils/constants.js"
 import GameObject from "./GameObject.js"
+import SoundSystem from "./Systems/SoundSystem.js"
 
 export default class AnimationState {
   #timer = 0
@@ -17,17 +18,22 @@ export default class AnimationState {
     this.keys  = this.gameObject.game.keys.actives //Actualiza as teclas activas  
     this.sound = null
     this.pauseSensivity = true
+    this.unremovesound = false
   }
   
   /** Controla quando a animação começa, o dev, pode aproveitar disso chamando o onStart */
   enter(){
     if(this.gameObject.canBePaused()) return
     if(this.gameObject instanceof GameObject){
-      if(this.gameObject.actualAnimation != this)
         this.soundPlay()
       this.gameObject.actualAnimation = this
+      this.initializeConfigs()
       this.onStart()
     }
+  }
+
+  initializeConfigs(){
+    this.xFrameIteration = 0
   }
 
   /**Chamado no update do GameObject */
@@ -61,7 +67,7 @@ export default class AnimationState {
   whenCanEndAnimation(){
     if(this.conditionToEnd()){
       this.internalAnimationEndConfig()
-      this.animationEnd()
+      this.onEnd()
       return true
     }
     return false
@@ -70,7 +76,7 @@ export default class AnimationState {
   /**
    * Chamar evento quando a animação para
    */
-  animationEnd(){}
+  onEnd(){}
 
   /**
    * Serve para combinar com this.keys, afim de verificar se o usuário apartou alguma tecla durante a animação
@@ -92,14 +98,16 @@ export default class AnimationState {
 
   soundPlay(){
     
-    if(this.sound){
-      if(this.sound.isRunning()) return
-      this.sound.playOnAnimation()
+    if(this.sound instanceof SoundSystem){
+      this.sound.setVolume(1)
+     this.sound.playOnAnimation()
     }
   }
   soundPause(){
-    if(this.sound)
+    if(this.sound){
+      this.sound.currentTime = 0
       this.sound.pause()
+    }
   }
   setSound(sound){
     this.sound = sound

@@ -26,7 +26,7 @@ export class Hart extends MashroomAnimation{
     super(gameObject, image, width, height)
     this.frameRatio = 1 //para piscar
   }
-  animationEnd(){
+  onEnd(){
     this.gameObject.enterToAnimation(Idle)
   }
 }
@@ -36,7 +36,7 @@ export class Atack extends MashroomAnimation{
     super(gameObject, image, width, height)
     this.firstXSpace = this.firstXSpace + 15
   }
-  animationEnd(){ //quando essa animação terminar
+  onEnd(){ //quando essa animação terminar
     this.gameObject.enterToAnimation(Idle)
   }
 }

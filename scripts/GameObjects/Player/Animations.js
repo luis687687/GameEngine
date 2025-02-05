@@ -22,7 +22,8 @@ export class Idle extends AnimationState {
     this.gameObject = gameObject
     this.xFrameIteration = 0
     this.yFrameIteration = 0
-    this.sound = new SoundSystem("./sounds/player/bre.mp3", true, 0.8, 2)
+    // this.sound = new SoundSystem("./sounds/player/bre.mp3", true, 0.2, 1)
+    this.unremovesound = true
     this.pauseSensivity = false
   }
  
@@ -72,23 +73,31 @@ export class JumAtack extends AnimationStateAtack {
     this.endX = this.gameObject.x + this.gameObject.width/2 +14
     this.damage = 5
     this.sound = new SoundSystem("./sounds/player/voohammer.mp3", false, 0.9)
+    this.sound2 = new SoundSystem("./sounds/player/manup.mp3")
    
   }
 
   
-  animationEnd(){
+  onEnd(){
     this.gameObject.enterToAnimation(Idle)
     this.gameObject.setX(this.endX)
     this.gameObject.move = true
     this.gameObject.coliderTrackerX = true
   }
 
+  manUpSound(){
+    this.sound2.playOnAnimation()
+  }
+
   running(){ //running controller
     this.gameObject.coliderTrackerX = false
+
    if(this.xFrameIteration > 20){
       this.gameObject.move = false
       this.soundToLaunchHammerStop()
-      if(this.gameObject.getColider()) this.gameObject.getColider().setX(this.endX + this.gameObject.coliderOffX)
+      if(this.gameObject.getColider()){
+        this.gameObject.getColider().setX(this.endX + this.gameObject.coliderOffX)
+      }
       return
    }
    if(this.xFrameIteration > 7) //para pausar o movimento
@@ -98,6 +107,7 @@ export class JumAtack extends AnimationStateAtack {
   }
   
   onStart(){
+    this.manUpSound()
     this.justLaunch = false
     this.justFall = false
     this.setedNewPosition = false
@@ -147,7 +157,7 @@ export class Walk extends AnimationState {
     this.xFrameIteration = 0
     this.yFrameIteration = 0
     this.fps = 15
-    this.sound = new SoundSystem("./sounds/player/walking.mp3", true, 1)
+    this.sound = new SoundSystem("./sounds/player/walking.mp3", true)
 
   }
 
@@ -196,7 +206,7 @@ export class Atack1 extends AnimationStateAtack {
   onStart(){ /**Controlar o colisor no inicio dessa animação */
   
   }
-  animationEnd(){ /**Retornar nas configurações e ficar no idle caso essa animação termine */
+  onEnd(){ /**Retornar nas configurações e ficar no idle caso essa animação termine */
     this.gameObject.enterToAnimation(Idle)
     this.gameObject.getColider().x -= this.moveColider
     this.justRunn = false
@@ -242,7 +252,7 @@ export class Atack1 extends AnimationStateAtack {
   }
   
   #finalSound(){
-    (new SoundSystem("./sounds/player/voohammer.mp3", false, 0.2, 1.1)).play()
+    //(new SoundSystem("./sounds/player/voohammer.mp3", false, 0.2, 1.1)).play()
   }
   
 }
@@ -305,17 +315,23 @@ export class Jump extends AnimationState {
     this.gameObject = gameObject
     this.xFrameIteration = 0
     this.yFrameIteration = 0
-    this.sound = new SoundSystem("./sounds/player/voohammer.mp3", false, 0.9)
+    this.sound = new SoundSystem("./sounds/player/voohammer.mp3", false, 1)
+    this.sound2 = new SoundSystem("./sounds/player/manup.mp3")
     this.frameRatio = 3 //define ate que percentagem do tempo a animação vai ser cortada, normal 1.8 é o ratio
 
   }
 
-  animationEnd(){
+  onEnd(){
     this.gameObject.enterToAnimation(Idle)
     this.gameObject.setX(this.gameObject.x + this.gameObject.width/2 - 16)
     this.gameObject.move = true
+    this.sound1 = new SoundSystem()
   }
 
+  manUpSound(){
+    
+    this.sound2.playOnAnimation()
+  }
   running(){
     if(this.xFrameIteration > 15){
       this.gameObject.move = false
@@ -326,6 +342,7 @@ export class Jump extends AnimationState {
   }
 
   onStart(){
+    this.manUpSound()
     if(this.keys.includes("Enter")) //se esiver a atacar
       this.xFrameIteration = 7 //ao entrar aqui, começa a animação apartir do frame 5
     this.gameObject.move = false
@@ -353,9 +370,10 @@ export class SpeenAtack extends AnimationStateAtack {
     this.fps = 60    
     this.frameRatio = 2.1
     this.sound = new SoundSystem("./sounds/player/spin.mp3", false, 0.9)
+    this.sound2 = new SoundSystem("./sounds/player/manup.mp3")
 
   }
-  animationEnd(){
+  onEnd(){
     if(this.gameObject instanceof GameObject){
       this.gameObject.enterToAnimation(Idle)
       this.gameObject.setX(this.gameObject.x+this.gameObject.width/2 - 40)
@@ -367,6 +385,10 @@ export class SpeenAtack extends AnimationStateAtack {
     }
   }
 
+  manUpSound(){
+   
+    this.sound2.playOnAnimation()
+  }
 
   running(){
     if(this.gameObject.getColider()){
@@ -377,6 +399,10 @@ export class SpeenAtack extends AnimationStateAtack {
       this.gameObject.move = false
       return
     }
+  }
+
+  onStart(){
+    this.manUpSound()
   }
 }
 
@@ -400,7 +426,7 @@ export class Warrior extends AnimationState {
   running(){
     this.gameObject.move = false
   }
-  animationEnd(){
+  onEnd(){
     this.gameObject.move = true
     this.sound.pause()
   }

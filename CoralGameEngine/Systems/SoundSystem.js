@@ -11,6 +11,9 @@ export default class SoundSystem {
     
   }
 
+  setVolume(vol){
+    this.sound.volume = vol
+  }
 
   play(){
     this.sound.play().then(e => {
@@ -50,6 +53,7 @@ export default class SoundSystem {
 
 
   playOnAnimation(){
+    this.sound.currentTime = 0
     this.sound.play().catch(e => { })
   
   }

@@ -36,6 +36,7 @@ class Game extends GameBuilder {
     //this.pauseScreen()
     this.#initialServerRequests()
     this.initializeGameVariables()
+    
     //this.gameOver()
   }
 
@@ -71,6 +72,7 @@ class Game extends GameBuilder {
     this.leavel = 0
 
     new RedDragon(this)
+    this.initializeSound()
     this.instanceateTimerControlers()
     this.instanteateCloud()
   }
@@ -90,7 +92,7 @@ class Game extends GameBuilder {
 
 
   initializeSound(){
-   new SoundSystem("./sounds/back.mp3", true, 0.02).play()
+   new SoundSystem("./sounds/back.mp3", true, 0.9).play()
   }
 
   showHUB(){
@@ -116,23 +118,33 @@ class Game extends GameBuilder {
     
   }
 
+  justInstateMash = false
   instanceateEnemies(){
-    this.updateTimerControler()
-    if(this.justIntaceate) return
-    if(this.count == 0) return
-    if(this.count % this.timeToCreateEnemy == 0){
-      if(!this.whenInstanceateEnemy()) return
-      
-      new Mashroom(this, this.person.x + this.distanceToIntanceate, 0)
-      this.justIntaceate = true
-    }
+    
+    if(this.justInstateMash) return
+    this.justInstateMash = true
+    
+    setTimeout( () => {
+      this.justInstateMash = false
+      const size = this.getActivesMash().length
+      let xPose = this.width*0.6
+      if(size)
+        xPose = this.getActivesMash()[size - 1].getRealCenterX()
+      console.log("Estou 3 ", xPose)
+      new Mashroom(this, xPose + 160, 0)
+      console.log("Here 1!!")
+    }, this.timeToCreateMashrooms*1000 )
+  }
+
+  getActivesMash(){
+    return this.getAllObjects().filter( e => e instanceof Mashroom)
   }
 
   instanceateTimerControlers(){
     this.justIntaceate = false
     this.count = 0
     this.pastTime = 0
-    this.timeToCreateEnemy = 3
+    this.timeToCreateMashrooms = 3
     this.distanceToIntanceate = 150
 
   }

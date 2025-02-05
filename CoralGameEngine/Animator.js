@@ -5,7 +5,7 @@ import AnimationState from "./AnimationState.js";
 
 export default class Animator extends AnimationState {
 
-  #index = 4
+  #index = 0
   #c = 0
   constructor(gameObject, image, w, h, frames = 1){
     super(gameObject, image, w, h)
@@ -13,6 +13,7 @@ export default class Animator extends AnimationState {
     this.imageInstanteate()
     this.frameX = 0
     this.frameY = 0
+    this.manual = false
     
     
   }
@@ -21,19 +22,26 @@ export default class Animator extends AnimationState {
 
   changeFrame(){
     if(this.gameObject.canBePaused() && this.pauseSensivity) return
-    if(this.#index + 1 >= this.frames)
+    if(this.manual) return
+    if(this.#index + 1 >= this.frames){
       this.#index = 0
-    else
+      
+    }else
       this.#index++
-    console.log(this.#c, this.getIndex())
-    // else
-    //   this.#index ++
+    
   }
 
+
+  setIndex(v){
+    this.#index = v
+  }
   conditionToEnd(){
     return this.#index + 1 >= this.frames
   }
   internalAnimationEndConfig(){
+    
+  }
+  initializeConfigs(){
     this.#index = 0
   }
 

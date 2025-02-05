@@ -26,7 +26,7 @@ export default class Enemy extends GameObjectWithPlayerReferece {
 
     /**enquanto colidem, ele nao muda a orientação */
     this.canToLook = true //no caso de eles estarem muito perto, fixa a direcção da orientatio
-
+    this.distanceToDontLoock = 0
 
     this.x = this.game.width/2 - this.width/2 +30
     this.coliderInitializer(25,this.width - 50 , 30, 50)
@@ -116,6 +116,10 @@ export default class Enemy extends GameObjectWithPlayerReferece {
 
 
 loockController(){
+  
+    if(this.distanceToDontLoock)
+    if(this.getDistanceOf(this.target.getColider()) < this.distanceToDontLoock) return
+
     if(this.target.getColider().getRealCenterX() >= this.getColider().getRealCenterX()){
       if(this.orientation == GameObjectOrientation.left)
         this.setOrientation(GameObjectOrientation.right)

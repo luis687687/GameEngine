@@ -5,19 +5,21 @@ import Enemy from "../Enemy.js";
 import { Atack, Hart, Idle } from "./Animations.js";
 import { Bomb } from "../Bomb/Bomb.js";
 import AreaGameOver from "../../GUI/AreaGameOver/AreaGameOver.js";
+import AtackerEnemy from "../AtackerEnemy.js";
 
-export class Mashroom extends Enemy {
-  constructor(game, x, y = 0){
+export class Mashroom extends AtackerEnemy {
+  constructor(game, x = 0, y = 0){
     super(game, 120, 120)
     this.setAnimations()
     this.enterToAnimation(Idle)
-    this.x = this.game.width/2 - this.width/2 +30
+    this.x = x
     this.coliderInitializer(25,this.width - 50 , 30, 50)
     this.debugColor = "yellow"
     this.totalBombs = 1
-    this.x = x !== undefined ? x : this.x
+    
     this.setYWithVerticalLimit(y)
     this.clicked = false
+    this.animationAtackType = Atack
   }
 
 
@@ -28,15 +30,10 @@ export class Mashroom extends Enemy {
     }
   }
   
-
-  atackPlayer(){
-    if(!this.target) return
-    const distance = (this.getDistanceOf(this.target.getColider()))
-    if(distance <= this.distanceToAtack && !this.isTheTargetAtack() && this.target.life > 0){
-      this.enterToAnimation(Atack)
-      this.shotBomb()
-    }
+  enemyUpdateWithTarget(){
+    if(this.x < -10) this.destroy() //destroa o elemento passado
   }
+ 
 
 
 

@@ -49,7 +49,7 @@ export default class ColisionSystem {
   #isInterCepting(colider1, colider2){ //if col1 is on front
     return ( this.#frontExtension(colider1) - this.#behindExtension(colider2) >= -3 )
   }
-  #frontExtension(colider){ //user on is interCepting function kkk muito top!
+  #frontExtension(colider){ //use on is interCepting function kkk muito top!
     return colider.width/2 + this.#getSensor(colider)
   }
   #behindExtension(colider){

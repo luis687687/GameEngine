@@ -12,15 +12,20 @@ export class GameObjectWithPlayerReferece extends TrackerGameObject {
   }
   /**Subscreve */
   referenceFrame(reference){ //Controlar quando mover o background
+
     if(this.game.person instanceof Player)  
      this.setObjectReference(this.game.person)
-    else
-      console.log("Nao tem person.... ")
+
     if(this.keys.includes("ArrowRight")){
+      
       if(this.reference instanceof Player){
+        
         if(this.reference.move && this.reference.isOnCenter){
+          
           if(this.dontMoveAsReference) return
-            this.moveLeft()
+            
+            this.moveLeft(1)
+            
         }
       }
     }

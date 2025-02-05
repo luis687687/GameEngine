@@ -18,13 +18,17 @@ export default class Player extends GameObject {
     this.setHPVisibility(true)
     this.debug = true
     
+    
   }
 
   update(){
     this.runned = true
+    //this.width = 170 //importante garantir a largura, devido ao efeito de piscar
     this.moveHorizontal()
     //this.moveVertical()
     this.#updateHud()
+    
+    
   }
 
 
@@ -66,7 +70,9 @@ export default class Player extends GameObject {
   }
 
 onColision(obj){
-  if(this.actualAnimation instanceof Atack1 || this.actualAnimation instanceof JumAtack || this.actualAnimation instanceof SpeenAtack){
+  if(this.actualAnimation instanceof Atack1 || 
+    this.actualAnimation instanceof JumAtack || 
+    this.actualAnimation instanceof SpeenAtack){
     if(obj instanceof Enemy){
       obj.colidedEvent(this.actualAnimation.damage)
     }
@@ -90,6 +96,8 @@ setAnimations(){
 }
 
 tackHit(hit){
+  // console.log("Estou morrendo... ")
+  // this.#flashEffectWhenTackHit()
   if(this.whenCantTakeHit()) return
   this.life -= hit
   if(this.life < 1){
@@ -99,6 +107,20 @@ tackHit(hit){
     return
   }
 }
+
+  
+  lasttime = this.game.timer
+  counttime = 0
+  #flashEffectWhenTackHit(){
+    if(this.game.timer - this.lasttime < 300)
+      return
+    this.lasttime = this.game.timer
+    if(this.width != 0)
+      this.width = 0
+    else
+      this.width = 170
+  }
+
 
 setHPVisibility(val){
   if(this.game.hud)

@@ -1,3 +1,4 @@
+
 import { ImageElement } from "./_helpers/ImageElement.js"
 import { GameObjectOrientation } from "./_utils/constants.js"
 import AnimationState from "./AnimationState.js"
@@ -82,6 +83,7 @@ class BaseObject{
     let image = this.actualAnimation.imgObject
     if(isAnimator){
       image = this.actualAnimation.imgObject[this.actualAnimation.getIndex()]
+
       if(!image.complete){
        // console.log("Não completa ", image, image.complete)
         return
@@ -134,15 +136,19 @@ class BaseObject{
    * @returns 
    */
 
-  moveRight(){
+  moveRight(vel){
     if(this.canBePaused()) return
+    
     if(!this.move)
       return
+    
     if(this.limitedHorizontal)
       if(this.x >= this.rightLimit){
+        
         return
       }
-    this.x += this.speed * this.game.gameSpeed
+      
+    this.x += (vel ? vel : this.speed) * this.game.gameSpeed
     this.listenRigthMoviment()
     
   }
@@ -179,17 +185,20 @@ class BaseObject{
   setXListener(){}
   beforeOrientationChange(){}
 
-  moveLeft(){
+  moveLeft(vel){
+    
     if(this.canBePaused()) return
+    
     if(!this.isInitialOrientation()){ //sentido de direcção mudou kkkkkk interessante
-      return this.moveRight()
+      
+      return this.moveRight(vel)
     }
     if(!this.move)
       return
     if(this.limitedHorizontal)
       if(this.x <= this.game.paddingX)
         return
-    this.x -= this.speed * this.game.gameSpeed
+    this.x -= (vel ? vel : this.speed) * this.game.gameSpeed
     this.listenLeftMoviment()
    
   }
@@ -199,13 +208,15 @@ class BaseObject{
     if(!this.move)
       return
     if(this.limitedVertical)
-      if(this.y + this.height/3 <= this.#maxHeight)
+      if(this.isAtMaxHeight())
         return
     this.y -= this.speed * this.game.gameSpeed
     this.listenUpMoviment()
    
   }
 
+  isAtMaxHeight(){return this.y + this.height/3 <= this.#maxHeight}
+  getMaxHeight(){ return this.#maxHeight}
   moveBottom(){
     if(this.canBePaused()) return
     if(!this.move)
@@ -278,15 +289,18 @@ class BaseObject{
    * @param {*} animationType 
    */
   enterToAnimation(animationType){
-    this.#muteAllSoundAnimation()
+    this.#muteAllSoundAnimation(true) //muito top!!!
     this.animations.forEach(animation => {
       if(animation instanceof animationType)
         animation.enter()
     })
   }
 
-  #muteAllSoundAnimation(){
+  #muteAllSoundAnimation(checkAnRemovedSounds){
     this.animations.forEach(animation => {
+      if(! (animation instanceof AnimationState)) return
+      if(checkAnRemovedSounds)
+        if(animation.unremovesound) return
         animation.soundPause()
     })
   }
