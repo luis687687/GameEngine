@@ -47,8 +47,15 @@ class BaseObject{
   
   update(){ }//para ser subscrito
 
+  #initialX = 0
+  setItInitialX(v){
+    this.#initialX = v
+  }
+  getItInitialX(){return this.#initialX}
+
   updateWithMyColider(){}
 
+  updateWithMyChilds(){}
   /**
    * Desenha objecto e coloca no this.game.context
    */
@@ -83,7 +90,7 @@ class BaseObject{
     let image = this.actualAnimation.imgObject
     if(isAnimator){
       image = this.actualAnimation.imgObject[this.actualAnimation.getIndex()]
-
+      
       if(!image.complete){
        // console.log("Não completa ", image, image.complete)
         return
@@ -238,14 +245,14 @@ class BaseObject{
     this.draw()
     this.update()
     this.updateWithMyColider()
+    this.updateWithMyChilds()
+    this.onUpdateScreenComponent()
     this.#setAllXLimit()
     this.#onGravityController()
-
-    
   }
 
   
-
+  onUpdateScreenComponent(){}
   
 
   //gerenciador de controlador de gravidade, se o object é sensivel a gravidade, se está no chao, a aceleração passa à zero, se não 
@@ -271,10 +278,12 @@ class BaseObject{
    * Destroi o objecto, removendo ele do jogo, chamando o this.game.removeObject(this)
    */
   destroy(){
+    
     if(this.containedChilds)
       this.containedChilds.forEach(e => {
         e.destroy()
     })
+    console.log("indd")
     this.game.removeObject(this)
     this.onDestroy()
     this.#muteAllSoundAnimation()
@@ -338,6 +347,7 @@ class BaseObject{
     else
       return this.#invertedXCoordsWithoutLimiter() + this.width / 2
   }
+  
 
   #justRun = false
   #runnOnlyOneTime(){ //deve ser, obrigatoriamente chamado antes de todos os updates
@@ -447,8 +457,10 @@ class BaseObject{
   //sensibilidades
   restrictOnSensibility(activity){
     this.onClick(activity)
+    this.callOnClick()
   }
   onClick(){}
+  callOnClick(){}
 
   setMaxHeight(v){
     this.#maxHeight = this.game.height - v
@@ -464,6 +476,7 @@ class BaseObject{
   //
   #instanteateContainedsChilds(){
     setTimeout( _ => { //gamb
+      // console.log("dalay to put childContent")
       const callFunc = this.childContent()
       if(! (callFunc instanceof Promise) ) throw "Erro de implementação: childContent deve ser async function"
       callFunc.then( containeds => {
@@ -473,7 +486,15 @@ class BaseObject{
         if(!this.containedChilds?.forEach) throw "Erro de implementação: childContent precisa retornar array de objectos de jogo"
         this.containedChilds.forEach(child => {
           child.x += this.x
-          child.y -= this.getRealYValue() - this.height + child.height
+          child.father = this
+          const val_to_up = this.getRealYValue() - this.height + child.height
+
+          if(child.y - val_to_up > child.y) //essa operação é uma gambiarra a analisar
+            child.y = child.y - this.getRealYValue() - this.height + child.height //se ao invez de elemento relativo baixar e não subir
+          else
+            child.y -= val_to_up //caso contrario
+
+          
           // child.y -= (this.game.height - this.getRealYValue()) + this.height - child.height
           //importante para components de screen
           if(this.screen && child.setScreen) //se tiver um screen e o child for setável, então colocar no mesmo screen

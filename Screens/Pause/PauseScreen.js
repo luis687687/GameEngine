@@ -7,10 +7,12 @@ export default class PauseScreen extends GameScreen{
     super(game)
     this.game.pause = true
     this.board()
+    this.game.sound.setVolume(0.2)
   }
 
   onDestroy(){
     this.game.pause = false
+    this.game.sound.setVolume(0.6)
   }
 
   board(){

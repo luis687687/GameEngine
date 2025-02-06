@@ -1,5 +1,6 @@
 import GameText from "../../../../CoralGameEngine/GameText.js";
 import GameBoard1 from "../../../Boards/GameBoard1.js";
+import SimpleButton from "../../../buttons/SimpleButton.js";
 
 
 export default class BoardPause extends GameBoard1{
@@ -19,9 +20,10 @@ export default class BoardPause extends GameBoard1{
   }
 
   items(){
-    this.title = new GameText(this.game, "Pausa", 60, 120, 305)
-    this.btnContinue = new GameText(this.game, "Honrar o Guerreiro", 20, 110, 240)
-    this.btnBack = new GameText(this.game, "Fugir da guerra", 20, 125, 200-5)
+    const xOffset = 220
+    this.title = new GameText(this.game, "Pausa", 60, 120 + xOffset, 305)
+    this.btnContinue = new SimpleButton(this.game, "Honrar o Guerreiro", 20, 110 + xOffset, 240)
+    this.btnBack = new SimpleButton(this.game, "Fugir da guerra", 20, 125 + xOffset, 200-5)
 
     this.events()
   }

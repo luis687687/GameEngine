@@ -7,8 +7,8 @@ import ScreenComponent from "./ScreenComponents/ScreenComponent.js"
  * Util para fazer, por exemplo, o background pegar a referencia do player em movimento
  */
 export default class TrackerGameObject extends ScreenComponent {
-  constructor(game, reference){
-    super(game)
+  constructor(game, reference, w, h, x, y){
+    super(game, undefined, w, h, x, y)
     this.keys = this.game.keys.actives
     if(reference instanceof BaseObject)
       this.reference = reference

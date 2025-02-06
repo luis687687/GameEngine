@@ -6,7 +6,7 @@ import GameColider from "./GameObjectColider.js";
 export default class GameObject extends BaseObject {
   #colider = null
   #startNow = true
-  constructor(game, width= 210, height = 190, x, y, limitedX, limitedY, tagname){
+  constructor(game, width= 210, height = 190, x = 0, y = 0, limitedX, limitedY, tagname){
     super(game, width , height)
     this.x = x
     this.tagname = tagname
@@ -17,8 +17,10 @@ export default class GameObject extends BaseObject {
     this.coliderFull = false
     
     this.setY(y)
+    this.setItInitialX(x)
     
   }
+
 
 
   updateWithMyColider(){
@@ -30,6 +32,16 @@ export default class GameObject extends BaseObject {
       this.#colider.height = this.height
       this.#colider.width = this.width
     }
+  }
+
+  
+  updateWithMyChilds(){
+    if(!this.containedChilds) return
+    if(!this.containedChilds.length) return
+    this.containedChilds.map( child => {
+      if(! (child instanceof BaseObject) ) return
+      child.x = child.getItInitialX() + (this.getRealCenterX() - this.width)
+    })
   }
 
   //colisores
@@ -111,8 +123,34 @@ export default class GameObject extends BaseObject {
   onDestroy(){
     if(this.#colider instanceof GameObjectColider){
       this.#colider.destroy()
+      this.#colider = null
     }
+    if(!this.containedChilds?.length) return
+    console.log(this, " Removendo filhos ")
+    this.containedChilds.map( (e) =>{ 
+      e.destroy()
+      console.log(e, " Removido ")
+    } )
+    this.containedChilds = []
   }
+
+  // #listenColisionFromGameObjectWithColider(){
+  //   const obj = this
+  //   if(!this.#colider) return
+  //   this.gameObjects.forEach(obj2 => {
+  //     if(obj == obj2) return
+  //     if(!obj2.getColider) return
+  //     if(!obj2.getColider()) return
+
+  //     if(!obj.getColider().feel || !obj2.getColider().feel) return
+  //     if(this.game.colisionSystem.isColidingHorizontaly(obj.getColider(), obj2.getColider())){
+  //         console.log("colidiram ", obj2.name, obj.name)
+  //         obj.onColision(obj2)
+  //         obj2.onColision(obj)
+  //     }
+  //   })
+    
+  // }
 
   /**esucutador subscrevivel */   
   onColision(objectColided){}

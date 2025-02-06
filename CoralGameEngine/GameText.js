@@ -5,6 +5,7 @@ export default class GameText extends ScreenComponent {
   constructor(game, text, size=30 , x = 0, y = 40, color= "#7a3d15", stroke = "#380d05"){
     super(game)
     this.x = x
+    this.setItInitialX(x) //importante garantir isso nas estruturas de componentes do core
     this.setY(y)
     this.text = text
     this.fontSize = size

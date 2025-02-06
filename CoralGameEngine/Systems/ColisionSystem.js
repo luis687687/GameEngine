@@ -28,8 +28,9 @@ export default class ColisionSystem {
     this.gameObjects.forEach( (obj) => {
       this.gameObjects.forEach(obj2 => {
         if(obj == obj2) return
-        if(!obj.getColider().feel || !obj2.getColider().feel) return
+       // if(!obj.getColider().feel || !obj2.getColider().feel) return
         if(this.#isColidingHorizontaly(obj.getColider(), obj2.getColider())){
+            
             obj.onColision(obj2)
             obj2.onColision(obj)
         }

@@ -24,8 +24,9 @@ export default class BoardGameOver extends GameBoard1 {
   }
 
   instanteate(){
-    this.title = new GameText(this.game, "Morte!", 60, 110, 300)
-    this.btnBack = new SimpleButton(this.game, "Voltar para menu", 20, 110, 140)
+    const xPose = 340
+    this.title = new GameText(this.game, "Morte!", 60, xPose, 300)
+    this.btnBack = new SimpleButton(this.game, "Voltar para menu", 20, xPose, 140)
 
     this.btnBack.onClick = () => {
       this.screen.destroy()

@@ -3,8 +3,8 @@ import { objectYPosition } from "./_constants.js";
 import Player from "./Player/Player.js";
 
 export class GameObjectWithPlayerReferece extends TrackerGameObject {
-  constructor(game, width, height){
-    super(game)
+  constructor(game, width, height,x,y){
+    super(game, undefined, width, height, x, y) //reference, sera setado depois
     this.width = width !== undefined ? width: this.width
     this.height = height !== undefined ? height : this.height
     //this.setOnGround()

@@ -1,4 +1,5 @@
 import GameText from "../../CoralGameEngine/GameText.js";
+import SoundSystem from "../../CoralGameEngine/Systems/SoundSystem.js";
 
 
 export default class SimpleButton extends GameText {
@@ -7,7 +8,12 @@ export default class SimpleButton extends GameText {
     super(game, text, siz, x, y)
     this.color = color
     this.stroke = stroke
+    this.sound = new SoundSystem("./sounds/click.mp3")
     
   }
 
+
+  callOnClick(){
+    this.sound.playOnAnimation()
+  }
 }

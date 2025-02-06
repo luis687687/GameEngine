@@ -8,4 +8,6 @@ export default class PlayingScreen extends GameScreen {
     this.backgroundColor = "transparent"
     new PauseButton(this.game, this)
   }
+
+
 }

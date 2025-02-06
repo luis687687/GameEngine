@@ -19,4 +19,12 @@ export default class ScreenComponent extends GameObject {
     this.screen.appendChild(this)
   }
 
+  onUpdateScreenComponent(){ // garante que, se tem um pai screen, e o pai screen nao estiver na tela, então ele nao deve existir
+    if(!this.screen) return
+    if(!this.game.getAllObjects().includes(this.screen)) return this.destroy()
+    
+    if(!this.father) return
+    if(!this.game.getAllObjects().includes(this.father)) return this.destroy()
+  }
+
 }

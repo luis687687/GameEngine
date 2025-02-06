@@ -8,14 +8,10 @@ import Player from "../Player/Player.js";
 
 export default class Enemy extends GameObjectWithPlayerReferece {
   #timerCount = 0 //***quando o enemy ataca ? */
-  constructor(game, w=120,h=120 ,x,y){
+  constructor(game, w=120,h=120,x,y){
     super(game, w, h)
-    this.live = 10
+    this.setLive(1000)
     this.candestroy = true
-    if(x !== undefined)
-      this.x = x
-    if(y !== undefined)
-      this.y = y
     this.distanceToAtack = 100
     this.maxBombs = 1
     this.bombs = []
@@ -28,11 +24,15 @@ export default class Enemy extends GameObjectWithPlayerReferece {
     this.canToLook = true //no caso de eles estarem muito perto, fixa a direcção da orientatio
     this.distanceToDontLoock = 0
 
-    this.x = this.game.width/2 - this.width/2 +30
+    // this.x = this.game.width/2 - this.width/2 +30
     this.coliderInitializer(25,this.width - 50 , 30, 50)
   }
 
 
+  setLive(v){
+    this.initLive = v
+    this.live = v
+  }
   safeUpdate(){ //so por segurana, nao subscrever
     this.#setTarget()
     this.lookToplayer()

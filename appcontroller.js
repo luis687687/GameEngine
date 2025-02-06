@@ -1,9 +1,14 @@
 async function checkSession(){
   store = JSON.parse(localStorage.getItem("data"))
-  if(!store) throw "Não está autenticado"
+  if(!store) {
+    console.log("N autenticado")
+    throw "Não está autenticado"}
   user_id = store.user_id
   session_id = store.session_id
-  if(!user_id || !session_id) throw "Sessão inválida"
+  if(!user_id || !session_id) {
+    console.log("Sem dados de sessoa validos")
+    throw "Sessão inválida"
+  }
   
   const response = await fetch("/user/check_session", {
     method: 'post', headers: {"Content-Type": "Application/json"},

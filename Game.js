@@ -29,10 +29,14 @@ class Game extends GameBuilder {
   constructor(){
     super(30)
 
+
+    this.sound = new SoundSystem("./sounds/back.mp3", true, 0.6)
+    this.initZombieSound()
+
     this.initializeFirstObjects()
     this.playingScreen()
     this.showHUB()
-    //this.splashScreen()
+    this.splashScreen()
     //this.pauseScreen()
     this.#initialServerRequests()
     this.initializeGameVariables()
@@ -43,8 +47,17 @@ class Game extends GameBuilder {
 
   update(){
     this.instanceateEnemies(this)
-    
-    
+    this.checkIfCanPlayZombieSound()
+
+  }
+
+  checkIfCanPlayZombieSound(){
+    if(!this.getActivesMash().length) return
+    if(!this.zombiesound) return
+    if(this.zombiesound.isRunning()) return
+    this.zombiesound.setVolume(0.1)
+    console.log("Tocando....")
+    this.zombiesound.playOnAnimation()
   }
 
   splashScreen(){
@@ -70,17 +83,25 @@ class Game extends GameBuilder {
     this.listElements = [this.sky, this.back2, this.back3, this.back4, this.background, this.person]
     this.gameOverObject = null
     this.leavel = 0
+    this.totalMashToInstance = 1
 
-    new RedDragon(this)
+    //new RedDragon(this)
     this.initializeSound()
     this.instanceateTimerControlers()
     this.instanteateCloud()
   }
 
+  reinitiBackSoundPosition(){
+    this.sound.setPosition(1000)
+  }
+
   reinitAll(){
+    this.sound.setVolume(0.3)
+    this.zombiesound.pause()
     this.listElements?.forEach( e => e.destroy())
     this.removeObjectByType(Enemy)
     this.removeObjectByType(GameObjectColider)
+    
     if(this.intervalcloud)
       clearInterval(this.intervalcloud)
   }
@@ -89,10 +110,13 @@ class Game extends GameBuilder {
 
 
 
-
+  initZombieSound(){
+    this.zombiesound = new SoundSystem("./sounds/mashroom/idle.mp3", true, 0.1)
+  }
 
   initializeSound(){
-   new SoundSystem("./sounds/back.mp3", true, 0.9).play()
+    this.reinitiBackSoundPosition()
+   this.sound.play()
   }
 
   showHUB(){
@@ -120,21 +144,41 @@ class Game extends GameBuilder {
 
   justInstateMash = false
   instanceateEnemies(){
-    
+    let timer
+    if(this.pause) return clearInterval(timer)
     if(this.justInstateMash) return
+    if(this.getActivesMash().length >= this.totalMashToInstance) return this.makePauseBeforeInstanteateMashrooms()
+    if(this.pausedOnInstanteateMeshrooms) return
     this.justInstateMash = true
-    
-    setTimeout( () => {
+    timer = this.#timerToInstanteateMashrooms()
+
+  }
+
+  #timerToInstanteateMashrooms(){
+    return setTimeout( () => {
       this.justInstateMash = false
-      const size = this.getActivesMash().length
-      let xPose = this.width*0.6
-      if(size)
-        xPose = this.getActivesMash()[size - 1].getRealCenterX()
-      console.log("Estou 3 ", xPose)
-      new Mashroom(this, xPose + 160, 0)
-      console.log("Here 1!!")
+      const totalMashrooms = this.getActivesMash().length
+      const xPose =  totalMashrooms ? this.getActivesMash()[totalMashrooms - 1].getRealCenterX() : this.width*0.4
+      new Mashroom(this, xPose + (totalMashrooms == 2 ? 220 : 130) , 0)
     }, this.timeToCreateMashrooms*1000 )
   }
+
+  /***
+   * Chamado para definir uma pausa depois de um certo numero de intanceas
+   */
+  pausedOnInstanteateMeshrooms
+  makePauseBeforeInstanteateMashrooms(){
+    if(this.pausedOnInstanteateMeshrooms) return
+    this.pausedOnInstanteateMeshrooms = true
+    let timer = setInterval(() => {
+      if(!this.getActivesMash().length){ //remove a pausa de instancializacao se nao tiver nehum ene
+        this.pausedOnInstanteateMeshrooms = false
+        clearInterval(timer)
+      }
+      
+    }, 5000)
+  }
+
 
   getActivesMash(){
     return this.getAllObjects().filter( e => e instanceof Mashroom)

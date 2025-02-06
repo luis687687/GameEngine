@@ -151,6 +151,7 @@ export class Fall extends Base {
     super(obj,"./sprites/gui/dragon/fall", 135, 118, 3)
     this.fps = 60
     this.manual = true
+    this.sound2 = new SoundSystem("./sounds/dragon/colision.mp3")
     
   }
   onStart(){
@@ -158,6 +159,7 @@ export class Fall extends Base {
     this.setIndex(0)
     this.gameObject.speed = 3
   }
+  
 
   running(){
     if(this.yDistance() <= this.initialyDistance/3 ){
@@ -178,11 +180,15 @@ export class Fall extends Base {
     }
   }
   onEnd(){
+    this.soundColision()
     setTimeout(() => {
       this.gameObject.enterToAnimation(Idle) //um efeitozinho
     }, 500)
   }
 
+  soundColision(){
+    this.sound2.playOnAnimation()
+  }
   yDistance(){
     return this.gameObject.game.height - this.gameObject.y - this.gameObject.height
   }

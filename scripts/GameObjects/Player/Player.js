@@ -4,21 +4,30 @@ import { objectYPosition } from "../_constants.js";
 import { Atack1, Dash, Dead, Idle, JumAtack, Jump, SpeenAtack, Walk, Warrior } from "./Animations.js";
 import Enemy from "../Enemies/Enemy.js";
 import { Life1, Life2, Life3, Life4, Life5 } from "../GUI/HUD/HP/Animations.js";
+import SoundSystem from "../../../CoralGameEngine/Systems/SoundSystem.js";
 
 export default class Player extends GameObject {
   constructor(game){
     super(game, 170, 126, 0, 0, true, true, "Player")
     this.setAnimations()
     this.enterToAnimation(Idle)
-    this.coliderInitializer(30,this.height - 50 , 30, 50)
+    this.coliderInitializer(30,this.height - 50 , 40, 50)
     this.isOnCenter = false
     this.runned = false
-    this.life = 5
+    this.setLife(5)
+
     this.use_gravity = true
     this.setHPVisibility(true)
     this.debug = true
+    this.name = "Luis"
+    this.hurtSound = new SoundSystem("./sounds/player/hurt.mp3")
     
     
+  }
+
+  setLife(v){
+    this.initLife = v
+    this.life = v
   }
 
   update(){
@@ -75,6 +84,7 @@ onColision(obj){
     this.actualAnimation instanceof SpeenAtack){
     if(obj instanceof Enemy){
       obj.colidedEvent(this.actualAnimation.damage)
+      console.log("Atackado!")
     }
   }
 
@@ -95,17 +105,21 @@ setAnimations(){
   ] 
 }
 
+
 tackHit(hit){
-  // console.log("Estou morrendo... ")
-  // this.#flashEffectWhenTackHit()
   if(this.whenCantTakeHit()) return
   this.life -= hit
+  
+  this.hurtSound.playOnAnimation()
   if(this.life < 1){
     this.game.gameOver()
     this.setHPVisibility(false)
     this.enterToAnimation(Warrior)
     return
   }
+}
+onDestroy(){
+  this.hurtSound.pause()
 }
 
   
@@ -126,17 +140,19 @@ setHPVisibility(val){
   if(this.game.hud)
     this.game.hud.getHP().visible = val
 }
-whenCantTakeHit(){
-  return this.actualAnimation instanceof JumAtack || this.actualAnimation instanceof Jump || this.actualAnimation instanceof SpeenAtack
+whenCantTakeHit(){ //quando é que ele não sente o efeito do atack
+  return this.actualAnimation instanceof JumAtack || 
+  this.actualAnimation instanceof Jump || 
+  this.actualAnimation instanceof SpeenAtack
 }
 
 #updateHud(){
   if(!this.game.hud) return
-  if(this.life == 5) this.game.hud.getHP().enterToAnimation(Life1)
-  if(this.life == 4) this.game.hud.getHP().enterToAnimation(Life2)
-  if(this.life == 3) this.game.hud.getHP().enterToAnimation(Life3)
-  if(this.life == 2) this.game.hud.getHP().enterToAnimation(Life4)
-  if(this.life == 1) this.game.hud.getHP().enterToAnimation(Life5)
+  if(this.life >= this.initLife * 0.9) return this.game.hud.getHP().enterToAnimation(Life1)
+  if(this.life >= this.initLife * 0.6) return this.game.hud.getHP().enterToAnimation(Life2)
+  if(this.life >= this.initLife * 0.4) return this.game.hud.getHP().enterToAnimation(Life3)
+  if(this.life >= this.initLife * 0.2) return this.game.hud.getHP().enterToAnimation(Life4)
+  this.game.hud.getHP().enterToAnimation(Life5)
 
 }
 

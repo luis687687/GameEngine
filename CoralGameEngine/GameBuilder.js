@@ -68,13 +68,6 @@ class GameBuilder {
         this.#updateAllGameObjects()
         }
 
-
-        // if(self instanceof GameBuilder){
-        //   self.animate()
-        //   self.colisionSystem.checkColision()
-        //   self.update()
-        //   self.#updateAllGameObjects()
-        //   }
       })
   }
   
@@ -211,8 +204,14 @@ class GameBuilder {
         e.allChilds = e.getChilds().filter( e => e != gameObject)
       }
     })
-    console.log(this.#allObjects.includes(gameObject), " Tem mesmo ?")
-    this.#allObjects = this.#allObjects.filter( e => e != (gameObject))
+
+    console.log("Destruindo... ", this.#allObjects.includes(gameObject), gameObject)
+    this.#allObjects = this.#allObjects.filter( e =>{
+      console.log(e, " fffffffffffffffffff")
+      if ( e != (gameObject) ) {
+
+        return true
+      }})
   }
   removeObjectByType(ObjectType){
     this.#allObjects = this.#allObjects.filter( e =>  {

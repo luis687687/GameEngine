@@ -7,10 +7,14 @@ export default class SoundSystem {
     // console.log(this.sound.playbackRate, "initial")
     this.sound.playbackRate = velocity
     this.shoosed = false //ja aberta por uma das opções
+    
 
     
   }
 
+  setPosition(v){
+    this.sound.currentTime = v
+  }
   setVolume(vol){
     this.sound.volume = vol
   }
@@ -23,10 +27,6 @@ export default class SoundSystem {
       // console.log("Deu erro aqui ! ", e)
       this.#playWhenKeyDown() //espera uma tecla pressionada
       this.#playWhenClicked() //espera um click do teclado, ou screen
-     
-
-
-      
     })
   }
 

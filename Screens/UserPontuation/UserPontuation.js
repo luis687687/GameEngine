@@ -16,7 +16,7 @@ export default class UserPontuation extends GameImage {
   async childContent(){
     
     const y = 90
-    console.log(this.game.height," luis ", this.y, this.y+ this.height, 50, this.getRealYValue() )
+    
     
     return [
       new GameImage(this.game, this.useravatar, 116, 119, 40, 40, 20,y-10,0,0),

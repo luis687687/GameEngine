@@ -1,4 +1,5 @@
 import AnimationState from "../../../../CoralGameEngine/AnimationState.js";
+import SoundSystem from "../../../../CoralGameEngine/Systems/SoundSystem.js";
  
 
 
@@ -17,7 +18,9 @@ class MashroomAnimation extends AnimationState{
 export class Idle extends MashroomAnimation{
   constructor(gameObject, image, width, height){
     super(gameObject, image, width, height)
+    
   }
+  
 }
 
 
@@ -35,6 +38,8 @@ export class Atack extends MashroomAnimation{
   constructor(gameObject, image, width, height){
     super(gameObject, image, width, height)
     this.firstXSpace = this.firstXSpace + 15
+    this.fps = 10
+    
   }
   onEnd(){ //quando essa animação terminar
     this.gameObject.enterToAnimation(Idle)

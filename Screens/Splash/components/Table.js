@@ -19,6 +19,7 @@ export default class Table extends GameImage {
     clickPlay(){
       this.screen.destroy()
       this.game.initializeFirstObjects()
+      
     }
     clickRanking(){
       this.destroy()
@@ -42,10 +43,11 @@ export default class Table extends GameImage {
 
 
     instanteateButtons(){
-      this.btnPlay = new SimpleButton(this.game, "Jogar", 25, this.width*0.42, this.height*0.65)
-      this.btnLeaderBoard = new SimpleButton(this.game, "Ranking", 25, this.width*0.42, this.height*0.54)
-      this.btnActiveControllers = new SimpleButton(this.game, "Controles", 20, this.width*0.42, this.height*0.43)
-      this.btnClose = new SimpleButton(this.game, "Abandonar", 18, this.width*0.42, this.height*0.32)
+      const xPose = this.width*0.915
+      this.btnPlay = new SimpleButton(this.game, "Jogar", 25, xPose, this.height*0.65)
+      this.btnLeaderBoard = new SimpleButton(this.game, "Ranking", 25, xPose, this.height*0.54)
+      this.btnActiveControllers = new SimpleButton(this.game, "Controles", 20, xPose, this.height*0.43)
+      this.btnClose = new SimpleButton(this.game, "Abandonar", 18, xPose, this.height*0.32)
       this.addEvents()
     }
 

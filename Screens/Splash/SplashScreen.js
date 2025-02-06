@@ -5,6 +5,7 @@ import OptionButton from "./components/large-buttons/RankingButton.js";
 import PlayButton from "./components/large-buttons/PlayButton.js";
 import Table from "./components/Table.js";
 import MenuRanking from "./components/MenuRanking.js";
+import SimpleButton from "../buttons/SimpleButton.js";
 
 
 export default class SplashScreen extends GameScreen {
@@ -14,8 +15,7 @@ export default class SplashScreen extends GameScreen {
     this.backgroundColor = "skyblue"
     this.putImageCover()
     this.menu()
-
-    
+    this.game.reinitAll()
   }
 
 
@@ -30,7 +30,27 @@ export default class SplashScreen extends GameScreen {
   }
 
   menuRanking(){
-    new MenuRanking(this.game, this)
+    this.menu_rank = new MenuRanking(this.game, this)
+    this.btnBackFromRanking()
+   
+  }
+
+  btnBackFromRanking(){
+    this.btnBack = new SimpleButton(this.game, "Voltar", 20, this.width*0.5, this.height*0.57)
+    this.btnBack.setScreen(this)
+    this.btnBack.height = 45
+    this.btnBack.width = 100
+    this.addEvents()
+  }
+
+  addEvents(){
+    const father = this
+    this.btnBack.onClick = () => {
+      if(father.menu_rank)
+        father.menu_rank.destroy()
+      father.btnBack.destroy()
+      father.menu()
+    }
   }
 
 
