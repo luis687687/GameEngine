@@ -9,6 +9,7 @@ export class GameObjectWithPlayerReferece extends TrackerGameObject {
     this.height = height !== undefined ? height : this.height
     //this.setOnGround()
     this.dontMoveAsReference = false
+    
   }
   /**Subscreve */
   referenceFrame(reference){ //Controlar quando mover o background
@@ -23,8 +24,8 @@ export class GameObjectWithPlayerReferece extends TrackerGameObject {
         if(this.reference.move && this.reference.isOnCenter){
           
           if(this.dontMoveAsReference) return
-            
-            this.moveLeft(1)
+          if(this.normalVelocityReference) return this.moveLeft(1+ this.reference.speed/2)
+            this.moveLeft()
             
         }
       }

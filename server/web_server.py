@@ -6,20 +6,11 @@ from .controllers.score import get_score_by_user_id
 from .services.score import get_scores_with_user
 from .controllers.session import session_in_time_by_id, get_session_by_id
 
-host="localhost"
-port=8080
+host="0.0.0.0"
+port=8000
 passkey="luis001"
 adminemail="luismarques@gmail.com"
-
-
-
-
-
-
-
 class CustomizedHTTPRequestHandler(SimpleHTTPRequestHandler):
-
-
   def ok_header(self):
     self.send_response(200)
     self.send_header("Content-type" , "Application/json")
@@ -217,13 +208,16 @@ class CustomizedHTTPRequestHandler(SimpleHTTPRequestHandler):
   
 
 
-
+import socketserver
 try:
-  server = HTTPServer((host, port), CustomizedHTTPRequestHandler)
-  server.serve_forever()
-except:
-  print("Feichando o server")
-  server.server_close()
+  # server = HTTPServer((host, port), CustomizedHTTPRequestHandler)
+
+  with socketserver.TCPServer((host, port), CustomizedHTTPRequestHandler) as httpd:
+    httpd.serve_forever()
+  # server.serve_forever()
+except Exception as ex :
+  print(f"Feichando o server {ex}")
+  
   exit()
 
 

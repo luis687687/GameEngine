@@ -28,6 +28,8 @@ export default class SoundSystem {
       this.#playWhenKeyDown() //espera uma tecla pressionada
       this.#playWhenClicked() //espera um click do teclado, ou screen
     })
+
+
   }
 
   #playWhenKeyDown(){
@@ -55,6 +57,7 @@ export default class SoundSystem {
   playOnAnimation(){
     this.sound.currentTime = 0
     this.sound.play().catch(e => { })
+
   
   }
 

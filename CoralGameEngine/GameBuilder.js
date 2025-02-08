@@ -5,6 +5,7 @@ import GameScreen from "./GameScreen.js"
 import ColisionSystem from "./Systems/ColisionSystem.js"
 import GravitySystem from "./Systems/GravitySystem.js"
 import BackgroundObject from "./BackgroundObject.js"
+import LifeIndicator from "../scripts/GameObjects/Enemies/LifeIndicator/LifeIndicator.js"
 
 
 
@@ -205,13 +206,8 @@ class GameBuilder {
       }
     })
 
-    console.log("Destruindo... ", this.#allObjects.includes(gameObject), gameObject)
-    this.#allObjects = this.#allObjects.filter( e =>{
-      console.log(e, " fffffffffffffffffff")
-      if ( e != (gameObject) ) {
-
-        return true
-      }})
+    //console.log("Destruindo... ", this.#allObjects.includes(gameObject), gameObject)
+    this.#allObjects = this.#allObjects.filter( e => e != (gameObject) )
   }
   removeObjectByType(ObjectType){
     this.#allObjects = this.#allObjects.filter( e =>  {

@@ -27,7 +27,7 @@ export default class GameInput {
 
   #onTouch(){
     this.game.area.addEventListener("click", (action) => {
-      
+      console.log("Clicou em ", action)   
       const activity = this.#getMouseDifinition(action)
       this.#allGameObjectSetSensiblity(activity)
       

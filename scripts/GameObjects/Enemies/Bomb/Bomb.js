@@ -6,7 +6,7 @@ import Enemy from "../Enemy.js";
 import { Bomb1, BombExplode } from "./Animation.js";
 
 export class Bomb extends Enemy {
-  constructor(game, w, h, x, y, orientation){
+  constructor(game, w, h, x, y){
     super(game, w, h, x,y)
     this.speed = 10
     this.x = x
@@ -14,17 +14,18 @@ export class Bomb extends Enemy {
     this.width = 30
     this.height = 30
     this.debug = true
-    console.log(this.x, " fff1 ")
-    // if(orientation != GameObjectOrientation.right)
-    //   this.setOrientation(orientation)
     this.coliderInitializer(0,0, w, h)
     this.setAnimations()
     this.dontMoveAsReference = true
     this.sound = new SoundSystem("./sounds/mashroom/atack.mp3", false)
     this.sound.playOnAnimation()
     this.name = "bomba"
-    console.log(this.x, " fff2 ")
+    
   }
+
+  // enemyUpdateWithTarget(){
+  //   console.log(this.waitToStartFeeling)
+  // }
   
   enemyUpdateWithTarget(){
     if(this.game.pause) return
@@ -49,21 +50,30 @@ export class Bomb extends Enemy {
 
   isdestroing = false
   onColision(obj){
-    
-    if(this.isdestroing) return
+    if(this.isdestroing) return //ajuda a nao sobrecarregar o settimout
+    if(this.waitToStartFeeling) return this.doWaitToStartFeeling() //interessante, para evitar que, quando o elemento for instanciado, antes de ser setado a orientacao, ele nao se exploda
     if(obj instanceof Player){
-      
        this.isdestroing = true
-        
         setTimeout(() => {
           this.destroy()
-        }, 500)
+        }, 1000)
       this.enterToAnimation(BombExplode)
       obj.tackHit(1)
       this.speed = 0
     }
   }
 
+
+  //defini uma pausa antes de ser sencivel
+  waitToStartFeeling = true
+  jusCalledWaitToStartFeelingTimeout = false
+  doWaitToStartFeeling(){
+    if(this.jusCalledWaitToStartFeelingTimeout) return
+    this.jusCalledWaitToStartFeelingTimeout = true
+    setTimeout(() => {
+      this.waitToStartFeeling = false
+    }, 500)
+  }
   setAnimations(){
     this.animations = [
       new Bomb1(this),

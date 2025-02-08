@@ -43,13 +43,17 @@ export class Fly extends Base {
     this.fps = 10
     this.sound = new SoundSystem("./sounds/dragon/flying.mp3", true, 1, 1.7)
   }
-  onStart(){
-    this.gameObject.speed = 10
-
+  onStart(){}
+  onEnd(){
+    this.gameObject.normalVelocityReference = false
+    this.gameObject.speed = 1
   }
   running(){
-    
-    this.gameObject.goToPlayer()
+    this.gameObject.speed = 10 + 1.5* this.gameObject.game.person .speed || 0
+    this.gameObject.normalVelocityReference = true
+
+    if(this.gameObject.goToPlayer)
+      this.gameObject.goToPlayer()
 
   }
 }
@@ -59,9 +63,16 @@ export class Hurt extends Base{
   constructor(obj){
     super(obj, "./sprites/gui/dragon/hurt", 111, 57, 4)
     this.fps = 5
+    this.sound = new SoundSystem("./sounds/dragon/hurt.mp3")
   }
-  onStart(){}
+  onStart(){
+    this.gameObject.height = this.beforeHeight - 10
+    this.gameObject.width = this.beforeWidth - 10
+    this.gameObject.setY(-2)
+  }
   onEnd(){
+    this.gameObject.height = this.beforeHeight
+    this.gameObject.width = this.beforeWidth
     this.gameObject.enterToAnimation(Idle)
   }
 }
@@ -73,9 +84,12 @@ export class Dead extends Base{
     this.fps = 1
     
   }
-  onStart(){}
+  
+
   onEnd(){
     this.manual = true
+    this.setIndex(2)
+    this.loop = false
   }
 }
 
@@ -93,17 +107,16 @@ export class StopedFireAtack extends Base{
   }
   running(){
     
-    if(this.getIndex() >= 5 && !this.manual)
+    if(this.getIndex() >= 4 && !this.manual)
       this.manual = true
-    
     if(this.manual){
-      this.fps = 15
-      this.setIndex(5)
+      this.fps = 15 //aumenta ve
+      this.setIndex(5) //obriga o fim
     }
 
   }
   onEnd(){
-    this.setIndex(4)
+    this.setIndex(3)
   }
 }
 

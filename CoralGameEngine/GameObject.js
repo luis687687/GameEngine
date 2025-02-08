@@ -4,7 +4,7 @@ import GameObjectColider from "./GameObjectColider.js";
 import GameColider from "./GameObjectColider.js";
 
 export default class GameObject extends BaseObject {
-  #colider = null
+  
   #startNow = true
   constructor(game, width= 210, height = 190, x = 0, y = 0, limitedX, limitedY, tagname){
     super(game, width , height)
@@ -24,13 +24,13 @@ export default class GameObject extends BaseObject {
 
 
   updateWithMyColider(){
-    if(!this.#colider) return
-    this.#colider.debug = this.debug
-    if(this.coliderTrackerY) this.#colider.y = this.#getColiderY()
-    if(this.coliderTrackerX) this.#colider.x =  this.#getColiderX()
+    if(!this.getColider()) return
+    this.getColider().debug = this.debug
+    if(this.coliderTrackerY) this.getColider().y = this.#getColiderY()
+    if(this.coliderTrackerX) this.getColider().x =  this.#getColiderX()
     if(this.coliderFull){
-      this.#colider.height = this.height
-      this.#colider.width = this.width
+      this.getColider().height = this.height
+      this.getColider().width = this.width
     }
   }
 
@@ -41,6 +41,7 @@ export default class GameObject extends BaseObject {
     this.containedChilds.map( child => {
       if(! (child instanceof BaseObject) ) return
       child.x = child.getItInitialX() + (this.getRealCenterX() - this.width)
+     // child.y = this.getInitialY()
     })
   }
 
@@ -49,7 +50,7 @@ export default class GameObject extends BaseObject {
     this.coliderFull = full
     this.coliderOffX = offx
     this.coliderOffY = offy
-    this.#colider = new GameColider(this.game, w ? w : this.width, h ? h : this.height, this.x, this.y)
+    this.setColider(new GameColider(this.game, w ? w : this.width, h ? h : this.height, this.x, this.y))
     this.#coliderDefinition()
   }
   
@@ -60,98 +61,74 @@ export default class GameObject extends BaseObject {
     return this.coliderOffY + this.y
   }
   #coliderDefinition(){
-    this.#colider.x = this.#getColiderX()
-    this.#colider.y = this.#getColiderY()
-    this.#colider.limitedHorizontal = this.limitedHorizontal
-    this.#colider.limitedVertical = this.limitedVertical
-    this.#colider.xlimiter = this.xlimiter
-    this.#colider.yLimiter = this.yLimiter
-    this.#colider.speed = this.speed
-    this.#colider.invertedReference = this
+    this.getColider().x = this.#getColiderX()
+    this.getColider().y = this.#getColiderY()
+    this.getColider().limitedHorizontal = this.limitedHorizontal
+    this.getColider().limitedVertical = this.limitedVertical
+    this.getColider().xlimiter = this.xlimiter
+    this.getColider().yLimiter = this.yLimiter
+    this.getColider().speed = this.speed
+    this.getColider().invertedReference = this
   }
 
-  getColider(){
-    return this.#colider
-  }
+
 
 
   listenRigthMoviment(){
-    if(!(this.#colider instanceof GameColider)) return
-    this.#colider.moveRight()
+    if(!(this.getColider() instanceof GameColider)) return
+    this.getColider().moveRight()
   }
   listenLeftMoviment(){
-    if(!(this.#colider instanceof GameColider)) return
-    this.#colider.moveLeft()
+    if(!(this.getColider() instanceof GameColider)) return
+    this.getColider().moveLeft()
   }
   listenUpMoviment(){
-    if(!(this.#colider instanceof GameColider)) return
-    this.#colider.moveUp()
+    if(!(this.getColider() instanceof GameColider)) return
+    this.getColider().moveUp()
   }
   listenBottomMoviment(){
-    if(!(this.#colider instanceof GameColider)) return
-    this.#colider.moveBottom()
+    if(!(this.getColider() instanceof GameColider)) return
+    this.getColider().moveBottom()
   }
   listenGravityEffect(){
-    if(!(this.#colider instanceof GameColider)) return
-    this.#colider.y = this.coliderOffY + this.y
+    if(!(this.getColider() instanceof GameColider)) return
+    this.getColider().y = this.coliderOffY + this.y
   }
 
 
   onOrientationChange(x){
-    if(!(this.#colider instanceof GameColider)) return
+    if(!(this.getColider() instanceof GameColider)) return
     this.#setFirstTimeInvertedOrientationReference()
   }
 
   editalbleRunnOnlyOneTime(){ //redefinidor do colider, actualizar o colider quando o objecto for visivel
-    if(!this.#colider)
+    if(!this.getColider())
       return
       if(!this.isInitialOrientation())
-        this.#colider.setOrientation(this.orientation)
+        this.getColider().setOrientation(this.orientation)
     this.#coliderDefinition()
   }
 
   #setFirstTimeInvertedOrientationReference(){
-    this.#colider.orientation = (this.orientation) // rotacionar também
+    this.getColider().orientation = (this.orientation) // rotacionar também
     this.#startNow = false //garante que seja so a primeira chamada
-    this.#colider.x = (this.x+this.coliderOffX)  // o seu colider precisa em primeiro pegar as coordenadas e...
+    this.getColider().x = (this.x+this.coliderOffX)  // o seu colider precisa em primeiro pegar as coordenadas e...
   }
 
  
-  setXListener(v){
-    this.#colider.x = (v+this.coliderOffX)
+  setXListener(v){ //escutador de mudança correcta do x position
+    this.getColider().x = (v+this.coliderOffX)
   }
   onDestroy(){
-    if(this.#colider instanceof GameObjectColider){
-      this.#colider.destroy()
-      this.#colider = null
+    if(this.getColider() instanceof GameObjectColider){
+      this.getColider().destroy()
+      this.setColider(null)
     }
-    if(!this.containedChilds?.length) return
-    console.log(this, " Removendo filhos ")
-    this.containedChilds.map( (e) =>{ 
-      e.destroy()
-      console.log(e, " Removido ")
-    } )
-    this.containedChilds = []
   }
 
-  // #listenColisionFromGameObjectWithColider(){
-  //   const obj = this
-  //   if(!this.#colider) return
-  //   this.gameObjects.forEach(obj2 => {
-  //     if(obj == obj2) return
-  //     if(!obj2.getColider) return
-  //     if(!obj2.getColider()) return
 
-  //     if(!obj.getColider().feel || !obj2.getColider().feel) return
-  //     if(this.game.colisionSystem.isColidingHorizontaly(obj.getColider(), obj2.getColider())){
-  //         console.log("colidiram ", obj2.name, obj.name)
-  //         obj.onColision(obj2)
-  //         obj2.onColision(obj)
-  //     }
-  //   })
-    
-  // }
 
+ 
   /**esucutador subscrevivel */   
   onColision(objectColided){}
 
@@ -161,9 +138,10 @@ export default class GameObject extends BaseObject {
    * Possibilita passar um evento seguramente controlado pelo GameObject,
    * Devido a taxa de actualização feita pelo ColisionSystem
   */
-  colidedEvent(...args){ /** */
+  colidedEvent(...args){ /** */ //////////////esse metodo ja nao e necessario!
     this.getColider().feel = false
     setTimeout ( _ => { /**Serve para reduzir a taxa de actualizacao feita no ColisionSys */
+        if(!this.getColider()) return
         this.callOnCalision(...args)
         this.getColider().feel = true
     }, 1150 )

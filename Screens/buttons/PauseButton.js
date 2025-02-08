@@ -2,9 +2,9 @@ import GameImage from "../../CoralGameEngine/GameImage.js";
 import SoundSystem from "../../CoralGameEngine/Systems/SoundSystem.js";
 
 export default class PauseButton extends GameImage {
-  constructor(game, screen){
+  constructor(game, screen, x, y){
 
-    super(game, "./sprites/gui/items1.png", 700,700, 60, 60, game.width*0.9, game.height*0.95, 1280, 2710)
+    super(game, "./sprites/gui/gui.png", 60,60, 50, 50, game.width*0.95, game.height*0.95, 509, 380)
     this.debug = true
     this.setScreen(screen)
     this.sound = new SoundSystem("./sounds/click.mp3")

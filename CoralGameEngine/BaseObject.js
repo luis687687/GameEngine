@@ -12,6 +12,7 @@ class BaseObject{
   #realX = 0 //Esse é importante, principalmente para os objectos que rotacionam no eixo y e perdem a referencia base
   static objectId = 0 //permite identificar unicamente cada objecto
   #maxHeight = 5
+  #colider = null 
   constructor(game, width = 210, height = 190, use_gravity, tagname){
     this.game = game
     this.imgElement = undefined
@@ -22,7 +23,7 @@ class BaseObject{
       this.width = width
       this.height = height
       this.actualAnimation = null
-      this.orientation = GameObjectOrientation.right
+      this.#firstRunOrientation()
       this.debug = false
       this.#setLimiters()
       this.#setAparence()
@@ -44,6 +45,10 @@ class BaseObject{
     
   }
 
+
+  #firstRunOrientation(){
+    this.orientation = GameObjectOrientation.right
+  } //subscrito se necessário
   
   update(){ }//para ser subscrito
 
@@ -88,9 +93,9 @@ class BaseObject{
   drawerImageFromAnimation(){
     const isAnimator = this.actualAnimation instanceof Animator
     let image = this.actualAnimation.imgObject
+    
     if(isAnimator){
       image = this.actualAnimation.imgObject[this.actualAnimation.getIndex()]
-      
       if(!image.complete){
        // console.log("Não completa ", image, image.complete)
         return
@@ -136,6 +141,14 @@ class BaseObject{
     }else
       this.game.context.fillRect(x, y, w, h)
     this.drawerDebug(x,y,w,h)
+  }
+
+
+  getColider(){
+    return this.#colider
+  }
+  setColider(colid){
+    this.#colider = colid
   }
   
   /**
@@ -283,7 +296,6 @@ class BaseObject{
       this.containedChilds.forEach(e => {
         e.destroy()
     })
-    console.log("indd")
     this.game.removeObject(this)
     this.onDestroy()
     this.#muteAllSoundAnimation()
@@ -298,6 +310,7 @@ class BaseObject{
    * @param {*} animationType 
    */
   enterToAnimation(animationType){
+    if(this.actualAnimation instanceof animationType) return // lindo isso kkkk
     this.#muteAllSoundAnimation(true) //muito top!!!
     this.animations.forEach(animation => {
       if(animation instanceof animationType)
@@ -436,17 +449,24 @@ class BaseObject{
   altereY(val){
     this.y -= val;
     this.#realYValue += val
+  }
 
-  }
     setY(val){
-    this.#realYValue = val
-     if(this.limitedVertical) {
-        this.y = this.game.height - this.height - this.game.floor - val
-     }else{
-      
-      this.y = this.game.height - val
+      this.#realYValue = val
+      if(this.limitedVertical) {
+          this.y = this.game.height - this.height - this.game.floor - val
+      }else{
+        
+        this.y = this.game.height - val
+      }
+      this.setInitialY(this.y)
     }
-  }
+
+    #initialY
+    setInitialY(v){
+      this.#initialY = v
+    }
+    getInitialY(){return this.#initialY}
 
   setYWithVerticalLimit(y){
     this.limitedVertical = true
@@ -493,7 +513,7 @@ class BaseObject{
             child.y = child.y - this.getRealYValue() - this.height + child.height //se ao invez de elemento relativo baixar e não subir
           else
             child.y -= val_to_up //caso contrario
-
+          child.setInitialY(child.y) // importante setar a altura inicial para guardar uma boa referencia de calculos relativos, caso o pais se mova verticalmente
           
           // child.y -= (this.game.height - this.getRealYValue()) + this.height - child.height
           //importante para components de screen

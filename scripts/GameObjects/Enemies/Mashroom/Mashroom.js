@@ -22,10 +22,12 @@ export class Mashroom extends AtackerEnemy {
     this.setYWithVerticalLimit(y)
     this.clicked = false
     this.animationAtackType = Atack
+    this.value = 1
 
     
   }
 
+ 
 
   onColision(obj){
     this.canToLook = false
@@ -41,19 +43,23 @@ export class Mashroom extends AtackerEnemy {
   }
   
   enemyUpdateWithTarget(){
-    if(this.x < -10) this.destroy() //destroa o elemento passado
+    if(this.getColider())
+    if(this.getColider().getRealCenterX() < -10 && this.isInitialOrientation())  //quando auto destroy? se desaparecer da tela !
+      return this.destroy() //destroa o elemento passado 
     this.updateLifeIndicator()
   }
 
-
-  updateLifeIndicator(){
-      if(!this.lifeIndicator) return
-      if(this.live >= this.initLive*0.9) return this.lifeIndicator.setLife1()
-      if(this.live >= this.initLive*0.7) return this.lifeIndicator.setLife2()
-      if(this.live>= this.initLive*0.4) return this.lifeIndicator.setLife3()
-      if(this.live>= this.initLive*0.2) return this.lifeIndicator.setLife4()
-      return this.lifeIndicator.setLife5()
+  isThePlayerRightSide(){
+    if(!this.game.person) return
+    return (this.game.person.getColider().getRealCenterX() > this.getColider().getRealCenterX())
   }
+
+  runWhenDie(){
+    this.game.totalMashDeads ++
+    this.game.actualscore += this.value
+    this.destroy()
+  }
+
  
 
 
@@ -67,10 +73,9 @@ export class Mashroom extends AtackerEnemy {
   }
 
   
-
+  
   getAtackType(){
-    console.log(this.getColider().getRealCenterX(), " ffasd ")
-    const bomb = new Bomb(this.game, 20, 20, this.getColider().getRealCenterX(), this.getColider().y, this.orientation)
+    const bomb = new Bomb(this.game, 20, 20, this.getColider().getRealCenterX(), this.getColider().y)
     return bomb
   }
 
@@ -78,12 +83,7 @@ export class Mashroom extends AtackerEnemy {
 
   
   
-  async childContent(){
-    this.lifeIndicator = new LifeIndicator(this.game)
-    return [
-      this.lifeIndicator
-    ]
-  }
+
 
 
 }

@@ -13,6 +13,7 @@ export default class GameImage extends ScreenComponent {
     this.iy = iy
     this.iw = iw 
     this.ih = ih
+   
      
     
     

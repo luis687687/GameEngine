@@ -70,8 +70,8 @@ export class JumAtack extends AnimationStateAtack {
     this.xFrameIteration = 0
     this.yFrameIteration = 0
     this.frameRatio = 3 //define ate que percentagem do tempo a animação vai ser cortada, normal 1.8 é o ratio
-    this.endX = this.gameObject.x + this.gameObject.width/2 +14
-    this.damage = 5
+    this.endX = this.gameObject.getRealCenterX()+14
+    this.damage = 10
     this.sound = new SoundSystem("./sounds/player/voohammer.mp3", false, 0.9)
     this.sound2 = new SoundSystem("./sounds/player/manup.mp3")
    
@@ -130,7 +130,6 @@ export class JumAtack extends AnimationStateAtack {
 
    soundToEnd(){
     if(this.justFall) return
-    console.log("Fall")
     this.soundEnd = new SoundSystem("./sounds/player/atack1.mp3", false, 0.9, 1.2)
     this.soundEnd.playOnAnimation()
     this.justFall = true
@@ -294,10 +293,19 @@ export class Dead extends AnimationState {
     this.gameObject = gameObject
     this.xFrameIteration = 0
     this.yFrameIteration = 0
-    
+    this.sound = new SoundSystem("./sounds/player/screaming.mp3")
     //this.frameRatio = 2.1
 
   }
+  onStart(){
+    this.gameObject.move = false
+  }
+  
+  running(){
+    if(this.xFrameIteration >= 39)
+      this.xFrameIteration = 39
+  }
+  
 }
 
 
@@ -421,13 +429,40 @@ export class Warrior extends AnimationState {
     this.xFrameIteration = 0
     this.yFrameIteration = 0
     this.frameRatio = 2.2
-    this.sound = new SoundSystem("./sounds/player/screaming.mp3")
+    this.sound = new SoundSystem("./sounds/player/hurt.mp3")
   }
+
   running(){
-    this.gameObject.move = false
+    if(this.xFrameIteration > 5){
+      this.xFrameIteration = 0
+      this.gameObject.enterToAnimation(Idle)
+    }
+  }
+  onInput(keys){
+    if(this.gameObject instanceof GameObject){
+      if(keys.includes("ArrowRight") || keys.includes("ArrowLeft")){
+        this.gameObject.enterToAnimation(Walk)
+      }
+      if(keys.includes("ArrowDown")){
+        if(this.gameObject.onground()) //so  executa speen no chao
+          this.gameObject.enterToAnimation(SpeenAtack)
+      }
+
+      if(keys.includes("Enter")){
+        this.gameObject.enterToAnimation(Atack1)
+      }
+      if(keys.includes("Control")){
+        this.gameObject.enterToAnimation(JumAtack)
+      }
+      if(keys.includes("ArrowUp")){
+        this.gameObject.enterToAnimation(Jump)
+      }
+      if(keys.includes("ArrowDown")){
+        this.gameObject.enterToAnimation(SpeenAtack)
+      }
+    }
   }
   onEnd(){
-    this.gameObject.move = true
-    this.sound.pause()
+    this.gameObject.enterToAnimation(Idle)
   }
 }

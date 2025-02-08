@@ -19,10 +19,14 @@ export default class BackgroundPlayerReference extends BackgroundObject {
     if(this.keys.includes("ArrowRight")){
       if(this.reference instanceof Player){
         if(this.reference.move){
-          if(this.reference.isOnCenter)
+          if(this.reference.isOnCenter){
+          
             this.moveLeft()
+          }
         }
       }
     }
   }
+
+ 
 }

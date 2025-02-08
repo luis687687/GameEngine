@@ -11,6 +11,12 @@ export default class Cloud1 extends GameImage {
   }
 
   update(){
+    if(this.game.person){
+      if(this.game.person.isOnCenter){
+        this.moveLeft(this.game.person.speed/1.3 + this.speed)
+        return
+      }
+    }
     this.moveLeft()
   }
 }

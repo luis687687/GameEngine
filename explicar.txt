@@ -1,2 +1,11 @@
 A fluidez entre as animações, a capacidade de troca-las, facilmente, interagindo uma com a outra, como, saber em que frame apartir de que frame ou index de quadro, começa uma animação
 Exemplo, a animação de salto, enquanto ataca, o salto começa do frame 7, mas se estiver parado ou andando o salto começa do frame ou index 0
+
+
+
+No nivel um
+Se o player está a executar a animacao de atack, nenhum mashroom ataca
+Um drag por cena
+Se tem um drag, a distancia entre os mash é maior
+Só 3 mash por cena
+Uma pausa para instanciar os mash, só recomeça a instanciar os mash depois de matar todos os mash

@@ -8,7 +8,7 @@ import Player from "../Player/Player.js";
 
 export default class Enemy extends GameObjectWithPlayerReferece {
   #timerCount = 0 //***quando o enemy ataca ? */
-  constructor(game, w=120,h=120,x,y){
+  constructor(game, w=120,h=120){
     super(game, w, h)
     this.setLive(1000)
     this.candestroy = true
@@ -22,10 +22,12 @@ export default class Enemy extends GameObjectWithPlayerReferece {
 
     /**enquanto colidem, ele nao muda a orientação */
     this.canToLook = true //no caso de eles estarem muito perto, fixa a direcção da orientatio
+    this.stopLoock = false
     this.distanceToDontLoock = 0
 
     // this.x = this.game.width/2 - this.width/2 +30
     this.coliderInitializer(25,this.width - 50 , 30, 50)
+    this.setObjectReference(this.game.person)
   }
 
 
@@ -37,10 +39,13 @@ export default class Enemy extends GameObjectWithPlayerReferece {
     this.#setTarget()
     this.lookToplayer()
     this.die()
+    
     if(!this.game.pause) 
       this.atackPlayer()
     this.enemyUpdateWithTarget()   /**update garantidamente com o target*/
   }
+
+
   
   /**update garantidamente com o target*/
   enemyUpdateWithTarget(){}
@@ -58,10 +63,13 @@ export default class Enemy extends GameObjectWithPlayerReferece {
     if(this.candestroy)
       if(this.live <= 0){
         this.game.enemiesDied++
-        this.game.playerscore+=this.value
-        createScore(this.game.playerscore, this.game.leavel)
-        this.destroy()
+        this.runWhenDie()
+        createScore(this.game.actualscore, this.game.leavel)
       }
+  }
+
+  runWhenDie(){
+    this.destroy()
   }
 
   #setTarget(){
@@ -105,21 +113,25 @@ export default class Enemy extends GameObjectWithPlayerReferece {
 
 
   lookToplayer(){ //olhar para o centro do colider player
+    if(this.stopLoock) return
+    
     const targetColider = this.target?.getColider()
     if( !targetColider ) return
     const distance = (this.getDistanceOf(targetColider))
     if(distance >=  this.distanceToAtack)
       this.canToLook = true
-    if(!this.canToLook) return
+    if(!this.canToLook){ 
+      
+      return}
     this.loockController()
   }
 
+  
 
 loockController(){
-  
+    
     if(this.distanceToDontLoock)
     if(this.getDistanceOf(this.target.getColider()) < this.distanceToDontLoock) return
-
     if(this.target.getColider().getRealCenterX() >= this.getColider().getRealCenterX()){
       if(this.orientation == GameObjectOrientation.left)
         this.setOrientation(GameObjectOrientation.right)

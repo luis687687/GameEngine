@@ -14,8 +14,8 @@ export default class Player extends GameObject {
     this.coliderInitializer(30,this.height - 50 , 40, 50)
     this.isOnCenter = false
     this.runned = false
-    this.setLife(5)
-
+    this.setLife(4)
+    this.speed = 1.6
     this.use_gravity = true
     this.setHPVisibility(true)
     this.debug = true
@@ -36,6 +36,7 @@ export default class Player extends GameObject {
     this.moveHorizontal()
     //this.moveVertical()
     this.#updateHud()
+    console.log("Speed ", this.speed)
     
     
   }
@@ -84,7 +85,7 @@ onColision(obj){
     this.actualAnimation instanceof SpeenAtack){
     if(obj instanceof Enemy){
       obj.colidedEvent(this.actualAnimation.damage)
-      console.log("Atackado!")
+      
     }
   }
 
@@ -106,18 +107,30 @@ setAnimations(){
 }
 
 
+
 tackHit(hit){
+  return
   if(this.whenCantTakeHit()) return
   this.life -= hit
-  
-  this.hurtSound.playOnAnimation()
+  this.callHurtAnimation()
   if(this.life < 1){
     this.game.gameOver()
     this.setHPVisibility(false)
-    this.enterToAnimation(Warrior)
+    if(this.actualAnimation instanceof Dead) return
+    this.enterToAnimation(Dead)
     return
   }
 }
+
+callHurtAnimation(){
+  if(!(this.actualAnimation instanceof Walk))
+    this.enterToAnimation(Warrior)
+  else{
+    if(this.hurtSound.isRunning()) return
+    this.hurtSound.playOnAnimation()
+  }
+}
+
 onDestroy(){
   this.hurtSound.pause()
 }
@@ -143,7 +156,7 @@ setHPVisibility(val){
 whenCantTakeHit(){ //quando é que ele não sente o efeito do atack
   return this.actualAnimation instanceof JumAtack || 
   this.actualAnimation instanceof Jump || 
-  this.actualAnimation instanceof SpeenAtack
+  this.actualAnimation instanceof SpeenAtack || this.actualAnimation instanceof Dead
 }
 
 #updateHud(){

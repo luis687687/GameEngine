@@ -19,6 +19,7 @@ export default class AnimationState {
     this.sound = null
     this.pauseSensivity = true
     this.unremovesound = false
+    this.loop = true
   }
   
   /** Controla quando a animação começa, o dev, pode aproveitar disso chamando o onStart */
@@ -26,10 +27,17 @@ export default class AnimationState {
     if(this.gameObject.canBePaused()) return
     if(this.gameObject instanceof GameObject){
         this.soundPlay()
+      this.#removeLastAnimation()
       this.gameObject.actualAnimation = this
+      this.stop = false
       this.initializeConfigs()
       this.onStart()
     }
+  }
+  #removeLastAnimation(){
+    // if(!this.gameObject.actualAnimation) 
+    // if((this.gameObject.actualAnimation == this)) return
+    // this.gameObject.actualAnimation.onEnd()
   }
 
   initializeConfigs(){
@@ -41,6 +49,7 @@ export default class AnimationState {
       /**
      * Importante no uso do onInput
      */
+    if(!this.loop) return
    this.keys = this.gameObject.game.keys.actives //Actualiza as teclas activas
     this.onInput(this.keys) //controlador dos inputs em cada frame da animação
     if(this.gameObject.game.timer - this.#timer >= 1000/this.fps)//controla o fps
@@ -48,9 +57,10 @@ export default class AnimationState {
     else
       return
     const end =  this.whenCanEndAnimation()
-    this.changeFrame()
     if(!end)
-    this.running() //controlador de execução enquanto animação roda
+      this.running() //controlador de execução enquanto animação roda, importante estar antes do changeFrame
+    this.changeFrame()
+   
   }
 
   /**
@@ -66,9 +76,11 @@ export default class AnimationState {
   }
   whenCanEndAnimation(){
     if(this.conditionToEnd()){
-      this.internalAnimationEndConfig()
       this.onEnd()
-      return true
+      if(this.loop)
+      this.internalAnimationEndConfig()
+      
+      return true 
     }
     return false
   }
@@ -87,6 +99,7 @@ export default class AnimationState {
 
   /**Actualiza frame localmente */
   changeFrame(){
+    if(!this.loop) return
     if(this.gameObject.canBePaused() && this.pauseSensivity) return
     this.frameX = this.isNormalMode() ? this.firstXSpace + this.xFrameIteration * (this.width + this.frameHorizontalSpace) : this.xFrameIteration
     this.xFrameIteration += this.isNormalMode() ? 1 : this.speed * this.gameObject.game.gameSpeed

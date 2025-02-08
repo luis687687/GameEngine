@@ -1,3 +1,8 @@
+
+/***
+ * Uma coisa interessantemente estranha, acontece quando, chamo a função que apaga todos os game objects do jogo activo, onde os components de colider e childComponents dos mashrooms são eliminados, mas ainda assim do nada permanecem no vector de filhos do gamebuilder
+ * devo reforçar o delete de coliders e de lifeindicator dos inimigos
+ */
 import GameBuilder from "./CoralGameEngine/GameBuilder.js";
 import GameObjectColider from "./CoralGameEngine/GameObjectColider.js"; //para remover os coliders do game manualmente
 import SoundSystem from "./CoralGameEngine/Systems/SoundSystem.js";
@@ -13,6 +18,7 @@ import Ceil from "./scripts/GameObjects/Background/Ceil/Ceil.js";
 import { Sky } from "./scripts/GameObjects/Background/Sky/Sky.js";
 import RedDragon from "./scripts/GameObjects/Enemies/Dragon/RedDragon/RedDragon.js";
 import Enemy from "./scripts/GameObjects/Enemies/Enemy.js";
+import LifeIndicator from "./scripts/GameObjects/Enemies/LifeIndicator/LifeIndicator.js";
 import { Mashroom } from "./scripts/GameObjects/Enemies/Mashroom/Mashroom.js";
 import Cloud1 from "./scripts/GameObjects/GameItems/Cloud/Cloud1.js";
 import Cloud2 from "./scripts/GameObjects/GameItems/Cloud/Cloud2.js";
@@ -20,6 +26,7 @@ import Cloud5 from "./scripts/GameObjects/GameItems/Cloud/Cloud5.js";
 import AreaGameOver from "./scripts/GameObjects/GUI/AreaGameOver/AreaGameOver.js";
 import HUB from "./scripts/GameObjects/GUI/HUD/HUD.js";
 import Player from "./scripts/GameObjects/Player/Player.js";
+import StaticDragon from "./scripts/GameObjects/Statics/StaticDragon/StaticDragon.js";
 import { getMyScore, getScoreBoard } from "./scripts/gameToServer.js";
 
 
@@ -36,18 +43,21 @@ class Game extends GameBuilder {
     this.initializeFirstObjects()
     this.playingScreen()
     this.showHUB()
-    this.splashScreen()
+    //this.splashScreen()
     //this.pauseScreen()
     this.#initialServerRequests()
-    this.initializeGameVariables()
+    
     
     //this.gameOver()
   }
 
 
+
+  
   update(){
     this.instanceateEnemies(this)
     this.checkIfCanPlayZombieSound()
+
 
   }
 
@@ -72,7 +82,11 @@ class Game extends GameBuilder {
 
   initializeFirstObjects(){
 
+    
     this.reinitAll()
+    this.instanteateStaticDragon()
+    this.instanteateDragon()
+
     this.sky = new Sky(this)
     this.back4 = new Back4(this)
     this.back3 = new Back3(this)
@@ -83,12 +97,13 @@ class Game extends GameBuilder {
     this.listElements = [this.sky, this.back2, this.back3, this.back4, this.background, this.person]
     this.gameOverObject = null
     this.leavel = 0
-    this.totalMashToInstance = 1
+    this.totalMashToInstance = 3
 
     //new RedDragon(this)
     this.initializeSound()
     this.instanceateTimerControlers()
     this.instanteateCloud()
+    this.initializeGameVariables()
   }
 
   reinitiBackSoundPosition(){
@@ -101,6 +116,7 @@ class Game extends GameBuilder {
     this.listElements?.forEach( e => e.destroy())
     this.removeObjectByType(Enemy)
     this.removeObjectByType(GameObjectColider)
+    this.removeObjectByType(LifeIndicator)
     
     if(this.intervalcloud)
       clearInterval(this.intervalcloud)
@@ -123,9 +139,15 @@ class Game extends GameBuilder {
    this.hud = new HUB(this)
   }
 
+  justCallGameOver = false //importante
   gameOver(){
-    this.gameOverObject = new AreaGameOver(this)
-    this.gameover = true
+    if(this.justCallGameOver) return
+    this.justCallGameOver = true
+    setTimeout( () => {
+      this.gameOverObject = new AreaGameOver(this)
+      this.gameover = true
+    }, 2000)
+   
   }
   removeGameOver(){
    this.removeScreen(AreaGameOver)
@@ -147,6 +169,7 @@ class Game extends GameBuilder {
     let timer
     if(this.pause) return clearInterval(timer)
     if(this.justInstateMash) return
+    //acrescer, o barramento de instancia de mashroom, caso tenha mais de um dragao
     if(this.getActivesMash().length >= this.totalMashToInstance) return this.makePauseBeforeInstanteateMashrooms()
     if(this.pausedOnInstanteateMeshrooms) return
     this.justInstateMash = true
@@ -157,10 +180,52 @@ class Game extends GameBuilder {
   #timerToInstanteateMashrooms(){
     return setTimeout( () => {
       this.justInstateMash = false
-      const totalMashrooms = this.getActivesMash().length
-      const xPose =  totalMashrooms ? this.getActivesMash()[totalMashrooms - 1].getRealCenterX() : this.width*0.4
-      new Mashroom(this, xPose + (totalMashrooms == 2 ? 220 : 130) , 0)
+      new Mashroom(this, this.#minPlayerMashroomDistance() , 0)
     }, this.timeToCreateMashrooms*1000 )
+  }
+
+
+
+  
+  instanteateDragonIntervalCalled = false
+  totalDragons = 1
+  instanteateDragon(){
+    if(this.instanteateDragonIntervalCalled) return
+    this.instanteateDragonIntervalCalled = true
+    this.instanteateDragonTimer = setInterval(() => {
+      if(this.getActivesDragons().length >= this.totalDragons) return //instancia um dragao por vez
+      new RedDragon(this, this.width + 150)
+    }, 1000)
+  }
+  //se já instanciou dragon pelo menos uma vez, as outras devem ser aleatórias (sempre que canRandomlyCreateDragon() = 3 )
+  // 3 significa sim, num intervalo de 0 a
+  canRandomlyCreateDragon(){
+    return Math.max(0, parseInt(Math.random() * 6))
+  }
+
+
+  
+  justCallStaticDragons = false
+  instanteateStaticDragon(){
+    if(this.justCallStaticDragons) return 
+    this.justCallStaticDragons = true
+    this.timerStaticDragons = setInterval(() => {
+      new StaticDragon(this, -150, 0.82)
+      new StaticDragon(this, -130, 0.72)
+    }, 20000)
+  }
+  
+  stopCallStaticsDragons(){
+    if(!this.timerStaticDragons) return
+    clearInterval(this.timerStaticDragons)
+    this.justCallStaticDragons = false
+  }
+
+  #minPlayerMashroomDistance(){ //retorna a distancia para instanciar o mashrooms, e impedi que ele seja instanciado no mesmo ponto que o player
+    const totalMashrooms = this.getActivesMash().length
+    const xPose =  totalMashrooms ? this.getActivesMash()[totalMashrooms - 1].getRealCenterX() : this.width*0.4
+    const offSetX = this.getActivesDragons().length > 0 ? 120 : 0
+    return   Math.max(this.person.getRealCenterX()+200 , xPose  + (totalMashrooms >= 2 ? 290 : 170)) + offSetX
   }
 
   /***
@@ -184,6 +249,10 @@ class Game extends GameBuilder {
     return this.getAllObjects().filter( e => e instanceof Mashroom)
   }
 
+  getActivesDragons(){
+    return this.getAllObjects().filter( e => (e instanceof RedDragon) && !e.dead)
+  }
+
   instanceateTimerControlers(){
     this.justIntaceate = false
     this.count = 0
@@ -198,6 +267,11 @@ class Game extends GameBuilder {
     this.playerscore = 0
     this.myscore = 0
     this.scoreboard = []
+    this.justCallGameOver = false //importnate
+    this.actualscore = 0
+    this.totalDragonsDeads = 0
+    this.totalMashDeads = 0
+    
   }
 
   whenInstanceateEnemy(){

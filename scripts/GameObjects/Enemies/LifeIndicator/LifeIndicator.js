@@ -4,8 +4,9 @@ import { Life1, Life2, Life3, Life4, Life5 } from "./LifeIndicatorAnimations.js"
 
 export default class LifeIndicator extends GameObject {
   constructor(game){
-    super(game, 100, 15, 90, -5)
+    super(game, 100, 10, 90, -35)
     this.instanteateAnimations()
+    
     
   }
 

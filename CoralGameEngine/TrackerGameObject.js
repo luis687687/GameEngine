@@ -12,6 +12,7 @@ export default class TrackerGameObject extends ScreenComponent {
     this.keys = this.game.keys.actives
     if(reference instanceof BaseObject)
       this.reference = reference
+    this.normalVelocityReference = false
    
   }
   /**para ser subscrito */
@@ -20,6 +21,8 @@ export default class TrackerGameObject extends ScreenComponent {
   update(){
     this.safeUpdate()
     this.keys = this.game.keys.actives //actualiza as chaves
+    if(this.reference)
+      this.speed = this.#getInitialSpeed() + this.reference.speed/2
     this.referenceFrame(this.reference)
     
   }
@@ -46,4 +49,16 @@ export default class TrackerGameObject extends ScreenComponent {
     }
   }
   onOrientationReferenceListener(){}
+
+
+
+  justCalledInitialSpeed = false
+  initialSpeed = 0
+  #getInitialSpeed(){
+    if(this.justCalledInitialSpeed)
+      return this.initialSpeed
+    this.initialSpeed = this.speed
+    this.justCalledInitialSpeed = true
+    return this.speed
+  }
 }

@@ -28,6 +28,7 @@ export class Hart extends MashroomAnimation{
   constructor(gameObject, image, width, height){
     super(gameObject, image, width, height)
     this.frameRatio = 1 //para piscar
+    this.sound = new SoundSystem("./sounds/mashroom/hurt.mp3")
   }
   onEnd(){
     this.gameObject.enterToAnimation(Idle)
